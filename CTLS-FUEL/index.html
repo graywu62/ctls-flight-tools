@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d3b66">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>CTLS 燃油计划 | Fuel Planning</title>
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="stylesheet" href="../CTLS-common/css/header.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ============================================================
+       Header — 与 CTLS-TOL 共用样式
+       ============================================================ -->
+  <header class="app-header">
+    <div class="logo"><img src="assets/威翔logo.png" alt="AeroJones Aviation"></div>
+    <div class="titles">
+      <h1>CTLS 燃油计划</h1>
+      <p class="subtitle">AeroJones CTLS · Fuel Planning</p>
+    </div>
+  </header>
+
+  <div class="body-pad">
+
+    <!-- ============================================================
+         Section 1 — Flight Information
+         ============================================================ -->
+    <div class="sec-title-bar">
+      <span class="sec-badge">1</span>
+      <span class="sec-text">飞行信息 <span class="en">FLIGHT INFORMATION</span></span>
+    </div>
+
+    <div class="info-grid-2">
+      <div class="info-card">
+        <div class="info-card-head">
+          <svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M12 7 V12 L15.5 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <div class="info-lbl">
+            <span class="cn">预计飞行时间</span>
+            <small>Flight Time</small>
+          </div>
+        </div>
+        <div class="time-split">
+          <input type="number" id="flight_time_hr" min="0" value="2" class="time-num">
+          <span class="time-sep">h</span>
+          <input type="number" id="flight_time_min" min="0" max="59" value="30" class="time-num">
+          <span class="time-sep">m</span>
+        </div>
+        <div class="info-hint">(hh:mm)</div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-head">
+          <svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 3 H16 V6 L18 9 V18 H6 V9 L8 6 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M8 9 H16" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M9.5 12 L14.5 12 M10 14 L14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          <div class="info-lbl">
+            <span class="cn">地面运转时间</span>
+            <small>Ground Operation Time</small>
+          </div>
+        </div>
+        <div class="time-split">
+          <input type="number" id="ground_op_hr" min="0" value="0" class="time-num">
+          <span class="time-sep">h</span>
+          <input type="number" id="ground_op_min" min="0" max="59" value="20" class="time-num">
+          <span class="time-sep">m</span>
+        </div>
+        <div class="info-hint">(hh:mm)</div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         Section 2 — Cruise Settings
+         ============================================================ -->
+    <div class="sec-title-bar">
+      <span class="sec-badge">2</span>
+      <span class="sec-text">巡航设置 <span class="en">CRUISE SETTINGS</span></span>
+    </div>
+
+    <div class="cruise-grid">
+      <div class="select-card">
+        <div class="select-lbl">
+          <span class="cn">巡航功率</span>
+          <small>Cruise Power</small>
+        </div>
+        <select id="cruise_power" class="select-input">
+          <option value="50%">50% (Economy)</option>
+          <option value="65%" selected>65% (Normal)</option>
+          <option value="75%">75% (Fast)</option>
+        </select>
+      </div>
+
+      <div class="select-card">
+        <div class="select-lbl">
+          <span class="cn">巡航高度</span>
+          <small>Cruise Altitude</small>
+        </div>
+        <div class="alt-input-wrap">
+          <input type="number" id="cruise_altitude" class="alt-input" min="0" max="18000" step="100" value="6000">
+          <span class="alt-unit">ft</span>
+        </div>
+      </div>
+
+      <div class="result-stack">
+        <div class="result-card-sm">
+          <div class="result-head">
+            <svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 14 A8 8 0 0 1 20 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M12 14 L18 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="12" cy="14" r="1.6" fill="currentColor"/>
+            </svg>
+            <div class="info-lbl">
+              <span class="cn">参考转速</span>
+              <small>Reference RPM</small>
+            </div>
+          </div>
+          <div class="result-val">
+            <span class="val" id="res_ref_rpm">—</span>
+            <span class="unit">RPM</span>
+          </div>
+        </div>
+
+        <div class="result-card-sm">
+          <div class="result-head">
+            <svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="5" y="4" width="9" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <rect x="7" y="6" width="5" height="6" fill="currentColor" opacity=".25"/>
+              <path d="M14 9 H19 V14 H14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M19 12 L21 12 M19 14 L21 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <div class="info-lbl">
+              <span class="cn">巡航油耗</span>
+              <small>Cruise Fuel Burn</small>
+            </div>
+          </div>
+          <div class="result-val">
+            <span class="val" id="res_burn">—</span>
+            <span class="unit">L/hr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         POH Performance Reference Table
+         ============================================================ -->
+    <div class="poh-title">
+      <span class="poh-title-cn">巡航性能参考</span>
+      <span class="poh-title-en">Cruise Performance Reference</span>
+    </div>
+
+    <div class="poh-table-wrap">
+      <table class="poh-table" id="poh_table">
+        <thead>
+          <tr>
+            <th class="alt-head" rowspan="2">高度<br><small>Altitude</small></th>
+            <th colspan="4" class="grp-50">50% (Economy)</th>
+            <th colspan="4" class="grp-65">65% (Normal)</th>
+            <th colspan="4" class="grp-75">75% (Fast)</th>
+          </tr>
+          <tr>
+            <th>IAS (kt)</th><th>TAS (kt)</th><th>RPM</th><th>Fuel Burn (L/hr)</th>
+            <th>IAS (kt)</th><th>TAS (kt)</th><th>RPM</th><th>Fuel Burn (L/hr)</th>
+            <th>IAS (kt)</th><th>TAS (kt)</th><th>RPM</th><th>Fuel Burn (L/hr)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-alt="3000">
+            <th class="alt-cell">3000 ft</th>
+            <td data-power="50" data-alt="3000" data-key="ias">83</td>
+            <td data-power="50" data-alt="3000" data-key="tas">91</td>
+            <td data-power="50" data-alt="3000" data-key="rpm">4200</td>
+            <td data-power="50" data-alt="3000" data-key="burn">15.0</td>
+            <td data-power="65" data-alt="3000" data-key="ias">94</td>
+            <td data-power="65" data-alt="3000" data-key="tas">103</td>
+            <td data-power="65" data-alt="3000" data-key="rpm">4600</td>
+            <td data-power="65" data-alt="3000" data-key="burn">18.3</td>
+            <td data-power="75" data-alt="3000" data-key="ias">101</td>
+            <td data-power="75" data-alt="3000" data-key="tas">110</td>
+            <td data-power="75" data-alt="3000" data-key="rpm">4900</td>
+            <td data-power="75" data-alt="3000" data-key="burn">21.2</td>
+          </tr>
+          <tr data-alt="6000">
+            <th class="alt-cell">6000 ft</th>
+            <td data-power="50" data-alt="6000" data-key="ias">77</td>
+            <td data-power="50" data-alt="6000" data-key="tas">85</td>
+            <td data-power="50" data-alt="6000" data-key="rpm">4050</td>
+            <td data-power="50" data-alt="6000" data-key="burn">15.0</td>
+            <td data-power="65" data-alt="6000" data-key="ias">88</td>
+            <td data-power="65" data-alt="6000" data-key="tas">97</td>
+            <td data-power="65" data-alt="6000" data-key="rpm">4450</td>
+            <td data-power="65" data-alt="6000" data-key="burn">18.3</td>
+            <td data-power="75" data-alt="6000" data-key="ias">94</td>
+            <td data-power="75" data-alt="6000" data-key="tas">104</td>
+            <td data-power="75" data-alt="6000" data-key="rpm">4700</td>
+            <td data-power="75" data-alt="6000" data-key="burn">21.2</td>
+          </tr>
+          <tr data-alt="9000">
+            <th class="alt-cell">9000 ft</th>
+            <td data-power="50" data-alt="9000" data-key="ias">72</td>
+            <td data-power="50" data-alt="9000" data-key="tas">79</td>
+            <td data-power="50" data-alt="9000" data-key="rpm">3850</td>
+            <td data-power="50" data-alt="9000" data-key="burn">15.0</td>
+            <td data-power="65" data-alt="9000" data-key="ias">82</td>
+            <td data-power="65" data-alt="9000" data-key="tas">90</td>
+            <td data-power="65" data-alt="9000" data-key="rpm">4250</td>
+            <td data-power="65" data-alt="9000" data-key="burn">18.3</td>
+            <td data-power="75" data-alt="9000" data-key="ias">88</td>
+            <td data-power="75" data-alt="9000" data-key="tas">96</td>
+            <td data-power="75" data-alt="9000" data-key="rpm">4500</td>
+            <td data-power="75" data-alt="9000" data-key="burn">21.2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ============================================================
+         Section 3 + 5 — Fuel Calculation (left) / Fuel Summary (right)
+         ============================================================ -->
+    <div class="calc-summary-grid">
+
+      <!-- ===== Fuel Calculation (left) ===== -->
+      <div class="calc-col">
+        <div class="sec-title-bar">
+          <span class="sec-badge">3</span>
+          <span class="sec-text">燃油计算 <span class="en">FUEL CALCULATION</span></span>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7 V12 L15.5 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <div class="calc-body">
+            <div class="calc-lbl"><span class="cn">地面运转燃油</span><small>Ground Operation Fuel</small></div>
+            <div class="calc-formula"><span id="fx_ground_op">15.0 L/hr × 0:20 hr</span></div>
+          </div>
+          <div class="calc-result">
+            <span class="val" id="res_ground_op">5.0</span>
+            <span class="unit">L</span>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-icon">
+            <svg viewBox="0 0 24 24"><path d="M2 14 L9 11 L13 14 L22 8 L19 13 L13 16 L8 13 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="calc-body">
+            <div class="calc-lbl"><span class="cn">航程油耗</span><small>Trip Fuel</small></div>
+            <div class="calc-formula"><span id="fx_trip">18.3 L/hr × 2:30 hr</span></div>
+          </div>
+          <div class="calc-result">
+            <span class="val" id="res_trip">45.8</span>
+            <span class="unit">L</span>
+          </div>
+        </div>
+
+        <div class="calc-card calc-card-3col">
+          <div class="calc-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 3 L20 6 V12 C20 17 16 20 12 21 C8 20 4 17 4 12 V6 Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12 L11 14 L15 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="calc-body">
+            <div class="calc-lbl"><span class="cn">备用燃油</span><small>Reserve Fuel</small></div>
+            <div class="reserve-controls">
+              <div class="reserve-row">
+                <span class="reserve-lbl"><span class="cn">备用模式</span><small>Reserve Mode</small></span>
+                <select id="reserve_mode" class="reserve-select">
+                  <option value="VFR" selected>VFR (30 min)</option>
+                  <option value="IFR">IFR (45 min)</option>
+                  <option value="CUSTOM">Custom 自定义</option>
+                </select>
+              </div>
+              <div class="reserve-row">
+                <span class="reserve-lbl"><span class="cn">备用时间</span><small>Reserve Time</small></span>
+                <span class="reserve-time">
+                  <input type="text" id="reserve_time" value="0:30" inputmode="numeric" maxlength="5">
+                  <span class="unit">hr</span>
+                </span>
+              </div>
+            </div>
+            <div class="calc-formula reserve-formula"><span id="fx_reserve">18.3 L/hr × 0:30 hr</span></div>
+          </div>
+          <div class="calc-result">
+            <span class="val" id="res_reserve">9.2</span>
+            <span class="unit">L</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Fuel Summary (right) ===== -->
+      <div class="summary-col">
+        <div class="sec-title-bar">
+          <span class="sec-badge sec-badge-5">5</span>
+          <span class="sec-text">计算结果 <span class="en">FUEL SUMMARY</span></span>
+        </div>
+
+        <!-- Fuel On Board — 仅留用户填写窗口（无结果） -->
+        <div class="summary-card">
+          <div class="summary-icon">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="10" height="16" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="6" y="6" width="6" height="8" fill="currentColor" opacity=".25"/><path d="M14 10 H19 V14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M19 13 L21 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <div class="summary-body">
+            <div class="summary-lbl"><span class="cn">机上燃油量</span><small>Fuel On Board</small></div>
+            <div class="summary-formula">&nbsp;</div>
+          </div>
+          <div class="summary-input">
+            <input type="number" id="fuel_on_board" step="0.5" min="0" max="80" value="80">
+            <span class="summary-input-unit">L</span>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="10" height="16" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="6" y="6" width="6" height="8" fill="currentColor" opacity=".25"/><path d="M14 10 H19 V14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M19 13 L21 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <div class="summary-body">
+            <div class="summary-lbl"><span class="cn">所需燃油</span><small>Required Fuel</small></div>
+            <div class="summary-formula">Ground + Trip + Reserve</div>
+          </div>
+          <div class="summary-result">
+            <span class="val" id="res_required">60.0</span>
+            <span class="unit">L</span>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 4 V20 M6 8 L12 14 L18 8 M6 16 L12 22 L18 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="summary-body">
+            <div class="summary-lbl"><span class="cn">落地剩余燃油</span><small>Landing Fuel</small></div>
+            <div class="summary-formula">Fuel On Board − Ground − Trip</div>
+          </div>
+          <div class="summary-result">
+            <span class="val" id="res_landing">20.0</span>
+            <span class="unit">L</span>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 12 L18 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>
+          </div>
+          <div class="summary-body">
+            <div class="summary-lbl"><span class="cn">剩余油量可用航时</span><small>Endurance (Remaining Fuel)</small></div>
+            <div class="summary-formula"><span id="fx_endurance">20.0 L ÷ 18.3 L/hr</span></div>
+          </div>
+          <div class="summary-result">
+            <span class="val val-time" id="res_endurance">1:05</span>
+            <span class="unit">(hh:mm)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================
+       Footer Status Bar (no airplane)
+       ============================================================ -->
+    <div class="status-bar" id="fuel_status">
+      <div class="status-left">
+        <div class="status-icon-circle">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12 L10 17 L19 7" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="status-text">
+          <div class="status-title">燃油充足</div>
+          <div class="status-title-en">FUEL OK</div>
+        </div>
+      </div>
+      <div class="status-mid">
+        <div class="status-desc">机上燃油满足本次飞行需求。</div>
+        <div class="status-desc-en">Fuel on board is sufficient for this flight.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="data/pohData.js"></script>
+<script src="js/script.js"></script>
+<script src="../CTLS-common/js/shell-switch.js"></script>
+</body>
+</html>

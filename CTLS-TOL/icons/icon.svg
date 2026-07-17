@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e8eef5"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d3b66"/>
+      <stop offset="100%" stop-color="#1a5a92"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5222d"/>
+      <stop offset="100%" stop-color="#fa8c16"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <rect x="40" y="40" width="432" height="432" rx="72" fill="none" stroke="#dbe6f1" stroke-width="2"/>
+  <text x="256" y="220" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="120" font-weight="900" fill="url(#blue)" letter-spacing="-2">CTLS</text>
+  <g transform="translate(256,300)">
+    <line x1="-130" y1="0" x2="-110" y2="0" stroke="#0d3b66" stroke-width="4"/>
+    <line x1="-100" y1="-4" x2="-100" y2="4" stroke="#0d3b66" stroke-width="4"/>
+    <text x="0" y="6" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="700" fill="#2b3a48" letter-spacing="2">FLIGHT TOOLS</text>
+    <line x1="100" y1="-4" x2="100" y2="4" stroke="#0d3b66" stroke-width="4"/>
+    <line x1="110" y1="0" x2="130" y2="0" stroke="#0d3b66" stroke-width="4"/>
+  </g>
+  <path d="M 50 420 Q 200 380 380 440 L 460 460 L 460 480 L 50 480 Z" fill="url(#blue)"/>
+  <path d="M 380 440 Q 420 430 460 460 L 460 470 L 380 450 Z" fill="url(#orange)"/>
+</svg>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d3b66">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CTLS W&B">
+<meta name="format-detection" content="telephone=no">
+<title>CTLS 载重平衡计算器 | Weight & Balance</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192.png">
+<link rel="stylesheet" href="../CTLS-common/css/header.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+
+  <header class="app-header">
+    <div class="logo"><img src="威翔logo.png" alt="AeroJones Aviation"></div>
+    <div class="titles">
+      <h1>CTLS 载重平衡计算器</h1>
+      <p class="subtitle">Aerojones CTLS · Weight &amp; Balance Calculator</p>
+    </div>
+  </header>
+
+  <div class="body-pad">
+    <div class="sel-row">
+      <label>飞机注册号 <span class="en">Aircraft Reg.</span>：</label>
+      <select id="profile" onchange="loadProfile()"><option value="custom">自定义数据 / Custom</option></select>
+      <button class="btn-save" onclick="saveProfile()">保存<span class="en">Save</span></button>
+      <button class="btn-del" onclick="deleteProfile()">删除<span class="en">Del</span></button>
+    </div>
+
+    <div class="top-row">
+      <div class="table-panel">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:42%">项目<span class="en">Item</span></th>
+              <th>重量 kg<span class="en">Weight</span></th>
+              <th>力臂 m<span class="en">Arm</span></th>
+              <th>力矩 kg·m<span class="en">Moment</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="item">1. 基本空机重<span class="en">Basic Empty Weight</span></td>
+              <td><input type="number" id="w_empty" step="0.1" min="300" max="405" value="375.1" onchange="calc()"></td>
+              <td><input type="number" id="arm_empty" step="0.001" value="0.363" onchange="calc()"></td>
+              <td><input type="number" id="m_empty" class="ro" readonly></td>
+            </tr>
+            <tr>
+              <td class="item">2. 前座飞行员及乘客<span class="en">Pilot &amp; Passenger (front)</span></td>
+              <td><input type="number" id="w_crew" step="0.1" max="240" value="160" onchange="calc()"></td>
+              <td class="arm">0.330</td>
+              <td><input type="number" id="m_crew" class="ro" readonly></td>
+            </tr>
+            <tr>
+              <td class="item">3. 后舱行李箱 (≤50kg)<span class="en">Baggage Compartment</span></td>
+              <td><input type="number" id="w_baggage" step="0.1" max="50" value="0" onchange="calc()"></td>
+              <td class="arm">1.350</td>
+              <td><input type="number" id="m_baggage" class="ro" readonly></td>
+            </tr>
+            <tr>
+              <td class="item">4. 脚踏板置物箱 (≤5kg)<span class="en">Footwell Storage Box</span></td>
+              <td><input type="number" id="w_floor" step="0.1" max="5" value="0" onchange="calc()"></td>
+              <td class="arm">0.900</td>
+              <td><input type="number" id="m_floor" class="ro" readonly></td>
+            </tr>
+            <tr class="sumrow">
+              <td class="item">5. 零燃油总计 (1+2+3+4)<span class="en">Zero Fuel Weight (ZFW)</span></td>
+              <td><input type="number" id="w_zfw" class="ro" readonly></td>
+              <td><input type="number" id="arm_zfw" class="ro" readonly></td>
+              <td><input type="number" id="m_zfw" class="ro" readonly></td>
+            </tr>
+            <tr>
+              <td class="item">6. 可用燃油
+                <input type="number" id="v_fuel" class="mini" step="1" min="0" max="126" value="40" onchange="calc()"> L
+                <span class="en">Usable Fuel (density 0.725, ≤126 L)</span>
+              </td>
+              <td><input type="number" id="w_fuel" class="ro" readonly></td>
+              <td class="arm">0.430</td>
+              <td><input type="number" id="m_fuel" class="ro" readonly></td>
+            </tr>
+            <tr class="resultrow">
+              <td class="item">7. 起飞总计 (5+6)<span class="en">Takeoff Weight (TOW)</span></td>
+              <td><input type="number" id="w_tow" class="ro" readonly></td>
+              <td><input type="number" id="arm_tow" class="ro" readonly></td>
+              <td><input type="number" id="m_tow" class="ro" readonly></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-box">
+          <h4>重心包线</h4>
+          <span class="en">CG Envelope</span>
+          <canvas id="cgChart" width="260" height="280"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-bar">
+      <div class="res-item">
+        <div class="lbl">起飞总重<span class="en">Takeoff Weight</span></div>
+        <div class="val" id="disp_weight">--</div>
+        <div class="sub">限值 / Limit 600 kg</div>
+      </div>
+      <div class="res-item">
+        <div class="lbl">起飞重心<span class="en">Takeoff CG</span></div>
+        <div class="val" id="disp_cg">--</div>
+        <div class="sub">范围 / Range 0.325~0.420 m</div>
+      </div>
+      <div class="res-item">
+        <div class="lbl">平均气动弦百分比<span class="en">% MAC</span></div>
+        <div class="val" id="disp_mac">--</div>
+        <div class="sub">MAC = 1.280 m</div>
+      </div>
+      <div class="res-item">
+        <div class="lbl">剩余可用载重<span class="en">Remaining Payload</span></div>
+        <div class="val" id="disp_remain">--</div>
+      </div>
+    </div>
+
+    <div class="warnings" id="warnings"></div>
+
+  </div>
+</div>
+
+<script>
+// 重心包线（依据知识库图片 微信图片_20231120091634）
+// 坐标系：X = 质量力矩 (kg·m)，Y = 飞行质量 (kg)
+// 前限 / 后限为等重心斜线：力矩 = 重心(m) × 质量
+const CG_FWD = 0.325;
+const CG_AFT = 0.420;
+const MIN_MASS = 300;
+const MAX_MASS = 600;
+const FUEL_DENSITY = 0.725;
+
+const DEFAULT_PROFILES = {
+  'B-10J9':{empty:375.1,arm:0.363},
+  'B-12LY':{empty:390.5,arm:0.360},
+  'B-133X':{empty:360.0,arm:0.334}
+};
+
+let profiles = {};
+function loadProfiles() {
+  try { const s = localStorage.getItem('ctls_wb_profiles_v3'); if(s) profiles = JSON.parse(s); } catch(e) {}
+  if (!Object.keys(profiles).length) profiles = JSON.parse(JSON.stringify(DEFAULT_PROFILES));
+  const sel = document.getElementById('profile');
+  sel.innerHTML = '<option value="custom">自定义数据 / Custom</option>';
+  Object.keys(profiles).sort().forEach(n => { sel.innerHTML += `<option value="${n}">${n}</option>`; });
+}
+function loadProfile() {
+  const n = document.getElementById('profile').value;
+  if (n === 'custom' || !profiles[n]) return;
+  document.getElementById('w_empty').value = profiles[n].empty;
+  document.getElementById('arm_empty').value = profiles[n].arm;
+  calc();
+}
+function saveProfile() {
+  const n = prompt('飞机编号 Aircraft reg (如 B-10J9)：'); if (!n) return;
+  profiles[n] = {empty:parseFloat(document.getElementById('w_empty').value)||375.1, arm:parseFloat(document.getElementById('arm_empty').value)||0.363};
+  localStorage.setItem('ctls_wb_profiles_v3', JSON.stringify(profiles));
+  loadProfiles(); document.getElementById('profile').value = n; alert('已保存 Saved');
+}
+function deleteProfile() {
+  const sel = document.getElementById('profile');
+  const n = sel.value;
+  if (n === 'custom') { alert('无法删除"自定义"项 / Cannot delete Custom.'); return; }
+  if (!profiles[n]) { alert('未找到该预设 / Preset not found.'); return; }
+  if (!confirm('确认删除 ' + n + ' ?\nDelete preset ' + n + ' ?')) return;
+  delete profiles[n];
+  localStorage.setItem('ctls_wb_profiles_v3', JSON.stringify(profiles));
+  loadProfiles();
+  document.getElementById('profile').value = 'custom';
+  alert('已删除 ' + n + ' / Deleted.');
+}
+
+function calc() {
+  const liters = parseFloat(document.getElementById('v_fuel').value)||0;
+  const fuelKg = +(liters * FUEL_DENSITY).toFixed(1);
+
+  const w = {
+    empty: parseFloat(document.getElementById('w_empty').value)||0,
+    crew: parseFloat(document.getElementById('w_crew').value)||0,
+    baggage: parseFloat(document.getElementById('w_baggage').value)||0,
+    floor: parseFloat(document.getElementById('w_floor').value)||0,
+    fuel: fuelKg,
+  };
+  const arm = { empty: parseFloat(document.getElementById('arm_empty').value)||0, crew:0.330, baggage:1.350, floor:0.900, fuel:0.430 };
+  const m = {};
+  for (const k of Object.keys(w)) m[k] = +(w[k] * arm[k]).toFixed(1);
+
+  const zfw = +(w.empty + w.crew + w.baggage + w.floor).toFixed(1);
+  const m_zfw = +(m.empty + m.crew + m.baggage + m.floor).toFixed(1);
+  const arm_zfw = zfw > 0 ? +(m_zfw / zfw).toFixed(3) : 0;
+
+  const tow = +(zfw + w.fuel).toFixed(1);
+  const m_tow = +(m_zfw + m.fuel).toFixed(1);
+  const arm_tow = tow > 0 ? +(m_tow / tow).toFixed(3) : 0;
+  const cg_pct = ((arm_tow / 1.280) * 100).toFixed(1);
+
+  document.getElementById('w_fuel').value = fuelKg.toFixed(1);
+  document.getElementById('w_zfw').value = zfw.toFixed(1);
+  document.getElementById('m_zfw').value = m_zfw.toFixed(1);
+  document.getElementById('arm_zfw').value = arm_zfw.toFixed(3);
+  document.getElementById('w_tow').value = tow.toFixed(1);
+  document.getElementById('m_tow').value = m_tow.toFixed(1);
+  document.getElementById('arm_tow').value = arm_tow.toFixed(3);
+  document.getElementById('m_empty').value = m.empty.toFixed(1);
+  document.getElementById('m_crew').value = m.crew.toFixed(1);
+  document.getElementById('m_baggage').value = m.baggage.toFixed(1);
+  document.getElementById('m_floor').value = m.floor.toFixed(1);
+  document.getElementById('m_fuel').value = m.fuel.toFixed(1);
+
+  document.getElementById('disp_weight').textContent = tow.toFixed(1) + ' kg';
+  document.getElementById('disp_cg').textContent = arm_tow.toFixed(3) + ' m';
+  document.getElementById('disp_mac').textContent = cg_pct + ' %MAC';
+  document.getElementById('disp_remain').textContent = (600 - tow).toFixed(1) + ' kg';
+
+  const dw = document.getElementById('disp_weight'), dc = document.getElementById('disp_cg');
+
+  const fwd = CG_FWD, aft = CG_AFT;
+  let html = '';
+  const wOver = tow > 600;
+  const cgFwd = arm_tow < fwd;
+  const cgAft = arm_tow > aft;
+  const cgNear = !wOver && !cgFwd && !cgAft && (arm_tow < fwd + 0.020 || arm_tow > aft - 0.020);
+
+  if (wOver) { html += '<div class="warning danger">⚠ 起飞总重 '+tow.toFixed(1)+' kg 超出 600 kg 限制！<span class="en">TOW exceeds 600 kg MTOW limit</span></div>'; dw.className='val warn'; }
+  else if (tow > 570) { html += '<div class="warning caution">⚠ 总重接近上限（'+tow.toFixed(1)+'/600 kg）<span class="en">Weight approaching limit</span></div>'; dw.className='val ok'; }
+  else { dw.className='val ok'; }
+
+  if (cgFwd) { html += '<div class="warning danger">⚠ 重心 '+arm_tow.toFixed(3)+' m 超出前限（'+fwd.toFixed(3)+' m）<span class="en">CG exceeds forward limit</span></div>'; dc.className='val warn'; }
+  else if (cgAft) { html += '<div class="warning danger">⚠ 重心 '+arm_tow.toFixed(3)+' m 超出后限（'+aft.toFixed(3)+' m）<span class="en">CG exceeds aft limit</span></div>'; dc.className='val warn'; }
+  else if (cgNear) { html += '<div class="warning caution">⚠ 重心接近边界，请确认分布合理<span class="en">CG near boundary, verify loading</span></div>'; dc.className='val ok'; }
+  else { dc.className='val ok'; }
+
+  if (w.crew > 240) html += '<div class="warning danger">⚠ 前座载重超限（>240 kg）<span class="en">Front seat load exceeds 240 kg limit</span></div>';
+  if (w.baggage > 50) html += '<div class="warning danger">⚠ 行李超限（>50 kg）<span class="en">Baggage exceeds limit</span></div>';
+  if (liters > 126) html += '<div class="warning danger">⚠ 燃油体积超限（>126 L）<span class="en">Fuel volume exceeds limit</span></div>';
+
+  if (!html) html = '<div class="warning success">✓ 载重平衡合格<span class="en">Weight &amp; balance within limits</span></div>';
+  document.getElementById('warnings').innerHTML = html;
+
+  drawChart(tow, arm_tow);
+
+  /* === 用户显式要求：跨表数据发布 === */
+  try {
+    localStorage.setItem('ctls_v_fuel', String(liters));
+    localStorage.setItem('ctls_tow',    tow.toFixed(1));
+  } catch(e){}
+}
+
+function drawChart(tow, arm_cg) {
+  const c = document.getElementById('cgChart');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+  const ml=40, mr=12, mt=12, mb=32;
+  const pw = W-ml-mr, ph = H-mt-mb;
+
+  ctx.clearRect(0,0,W,H);
+
+  const xMin=80, xMax=300, yMin=300, yMax=625;
+  function x(mm) { return ml + (mm-xMin)/(xMax-xMin)*pw; }
+  function y(kg) { return mt + (1-(kg-yMin)/(yMax-yMin))*ph; }
+  const mFwd = kg => CG_FWD*kg;
+  const mAft = kg => CG_AFT*kg;
+
+  ctx.strokeStyle='#e5edf5'; ctx.lineWidth=0.5;
+  ctx.fillStyle='#8a97a5'; ctx.font='8px sans-serif'; ctx.textAlign='center';
+  for (let mm=80; mm<=300; mm+=20) {
+    ctx.beginPath(); ctx.moveTo(x(mm),mt); ctx.lineTo(x(mm),H-mb); ctx.stroke();
+    if (mm % 40 === 0) ctx.fillText(mm, x(mm), H-20);
+  }
+  ctx.textAlign='right';
+  for (let kg=300; kg<=625; kg+=25) {
+    ctx.beginPath(); ctx.moveTo(ml,y(kg)); ctx.lineTo(W-mr,y(kg)); ctx.stroke();
+    if (kg % 50 === 0 || kg===625) ctx.fillText(kg, ml-3, y(kg)+3);
+  }
+
+  ctx.fillStyle='#2b3a48'; ctx.font='8px sans-serif'; ctx.textAlign='center';
+  ctx.fillText('Moment (kg·m)', W/2, H-5);
+  ctx.save(); ctx.translate(9, mt+ph/2); ctx.rotate(-Math.PI/2); ctx.fillText('Mass (kg)',0,0); ctx.restore();
+
+  const P = [
+    [mFwd(MIN_MASS), MIN_MASS],
+    [mFwd(MAX_MASS), MAX_MASS],
+    [mAft(MAX_MASS), MAX_MASS],
+    [mAft(MIN_MASS), MIN_MASS],
+  ];
+  ctx.beginPath();
+  ctx.moveTo(x(P[0][0]), y(P[0][1]));
+  for (let i=1;i<P.length;i++) ctx.lineTo(x(P[i][0]), y(P[i][1]));
+  ctx.closePath();
+  ctx.fillStyle='rgba(35,120,4,0.12)'; ctx.fill();
+  ctx.strokeStyle='#237804'; ctx.lineWidth=2; ctx.stroke();
+
+  ctx.strokeStyle='#fa8c16'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(ml,y(600)); ctx.lineTo(W-mr,y(600)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#d46b08'; ctx.font='8px sans-serif'; ctx.textAlign='left';
+  ctx.fillText('600 kg MTOW', ml+3, y(600)-3);
+
+  if (tow > 0) {
+    const curMoment = tow * arm_cg;
+    const inEnv = arm_cg >= CG_FWD && arm_cg <= CG_AFT && tow <= MAX_MASS;
+    ctx.beginPath();
+    ctx.arc(x(curMoment), y(tow), 5, 0, Math.PI*2);
+    ctx.fillStyle = inEnv ? '#237804' : '#cf1322';
+    ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle='#0d3b66'; ctx.font='bold 8px sans-serif'; ctx.textAlign='left';
+    const lx = curMoment > 250 ? x(curMoment)-58 : x(curMoment)+7;
+    ctx.fillText(tow.toFixed(0)+'kg·'+curMoment.toFixed(0)+'kg·m', lx, y(tow)-7);
+    ctx.textAlign='center';
+  }
+}
+
+loadProfiles();
+calc();
+</script>
+<script src="../CTLS-common/js/shell-switch.js"></script>
+</body>
+</html>
