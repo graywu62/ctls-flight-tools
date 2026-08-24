@@ -1,0 +1,17 @@
+{
+  "id": "/ctls-flight-tools/",
+  "name": "CTLS 飞行工具箱",
+  "short_name": "CTLS Tools",
+  "description": "AeroJones CTLS 载重平衡、燃油计划及起飞着陆性能工具",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#071b2c",
+  "background_color": "#071b2c",
+  "icons": [
+    { "src": "CTLS-WB/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "CTLS-WB/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "CTLS-WB/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

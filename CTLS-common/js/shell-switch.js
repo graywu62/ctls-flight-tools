@@ -95,7 +95,10 @@
 
   sel.addEventListener('change', function(e){
     var url = TARGETS[e.target.value];
-    if (url) location.href = url;
+    if (url) {
+      if (window.CTLSToolDraftStore) window.CTLSToolDraftStore.save();
+      location.href = url;
+    }
   });
 
   /* 2b) 打印按钮（与各工具原打印逻辑一致：window.print）*/

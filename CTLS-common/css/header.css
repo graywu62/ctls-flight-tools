@@ -71,8 +71,17 @@
   letter-spacing:.4px;
 }
 
-/* 桌面 ≥600px：放大 padding 与字号 */
-@media (min-width:600px){
+/* 平板 600px-1024px */
+@media (min-width:600px) and (max-width:1024px){
+  .app-header{padding:11px 16px;gap:12px}
+  .logo{padding:6px 10px;height:auto}
+  .logo img{height:24px}
+  .titles h1{font-size:17px}
+  .titles .subtitle{font-size:10px}
+}
+
+/* 桌面 ≥1024px：放大 padding 与字号 */
+@media (min-width:1024px){
   .app-header{padding:12px 18px;gap:14px}
   .logo{padding:7px 12px;height:auto}
   .logo img{height:26px}

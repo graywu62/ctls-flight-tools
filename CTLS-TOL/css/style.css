@@ -20,14 +20,20 @@ body{font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFon
 .tab.active{background:linear-gradient(135deg,#0d3b66,#1a5a92);color:#fff;box-shadow:0 2px 6px rgba(13,59,102,.3)}
 .tab.active .en{color:#bcd4ea}
 .tab:not(.active):active{background:#dde6ef}
+.tab:focus-visible{outline:3px solid #ffbf47;outline-offset:2px}
 
 .tab-pane{display:none}
 .tab-pane.active{display:block}
 
 /* ---------------- Section titles ---------------- */
-.sec-title{font-size:12px;font-weight:600;color:#0d3b66;margin:12px 0 6px;padding:5px 9px;background:linear-gradient(135deg,#f4f8fc,#eaeff5);border:1px solid #d8e3ef;border-radius:7px;display:flex;flex-direction:column;line-height:1.2;letter-spacing:.2px;position:relative;overflow:hidden}
-.sec-title::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#0d3b66,#1a5a92)}
-.sec-title .en{display:block;font-size:9px;color:#7c8896;font-weight:400;margin-top:1px;letter-spacing:.3px}
+.sec-title{--title-accent:#2563a6;--title-deep:#174a7a;--title-bg:#e8f1fb;--title-border:#c7d9ec;font-size:12px;font-weight:600;color:var(--title-deep);margin:12px 0 6px;padding:5px 9px;background:linear-gradient(135deg,#fff,var(--title-bg));border:1px solid var(--title-border);border-radius:7px;display:flex;flex-direction:column;line-height:1.2;letter-spacing:.2px;position:relative;overflow:hidden}
+.sec-title::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--title-accent)}
+.sec-title .en{display:block;font-size:9px;color:var(--title-accent);font-weight:400;margin-top:1px;letter-spacing:.3px}
+.title-conditions{--title-accent:#2563a6;--title-deep:#174a7a;--title-bg:#e8f1fb;--title-border:#c7d9ec}
+.title-config{--title-accent:#0f766e;--title-deep:#115e59;--title-bg:#e7f6f3;--title-border:#bfe2dc}
+.title-results{--title-accent:#7651a8;--title-deep:#5b3b86;--title-bg:#f2edfa;--title-border:#d9cbed}
+.title-runway{--title-accent:#3f7d35;--title-deep:#2f6128;--title-bg:#edf7eb;--title-border:#cce4c7}
+.title-diagram{--title-accent:#ad6800;--title-deep:#874d00;--title-bg:#fff5df;--title-border:#f0d39e}
 
 /* ================================================================
    Grid rows — 等高等宽
@@ -41,6 +47,7 @@ body{font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFon
 
 /* 跑道航向 / 坡度 / 表面 三列：表面拉宽 */
 .row.rwy-line{grid-template-columns:1fr 1fr 1.8fr}
+.row.config-row{grid-template-columns:repeat(3,1fr)}
 @media (min-width:600px){
  .row.rwy-line{gap:10px;margin-bottom:10px}
 }
@@ -53,13 +60,13 @@ body{font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFon
 /* ================================================================
    Input field card — 94px 高
    ================================================================ */
-.fld{display:flex;flex-direction:column;padding:8px 10px;border:1px solid #d8e3ef;border-radius:8px;background:linear-gradient(135deg,#f4f8fc,#eaeff5);box-sizing:border-box;position:relative;height:94px;overflow:hidden}
+.fld{display:flex;flex-direction:column;padding:7px 9px;border:1px solid #d8e3ef;border-radius:8px;background:linear-gradient(135deg,#f4f8fc,#eaeff5);box-sizing:border-box;position:relative;height:86px;overflow:hidden}
 .fld::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#0d3b66,#1a5a92);opacity:.55;border-radius:8px 0 0 8px}
 
-.fld label{font-size:11px;color:#0d3b66;font-weight:600;line-height:1.25;letter-spacing:.2px;margin-bottom:4px;height:28px;display:flex;flex-direction:column;justify-content:flex-start;flex-shrink:0;overflow:hidden}
+.fld label{font-size:11px;color:#0d3b66;font-weight:600;line-height:1.2;letter-spacing:.2px;margin-bottom:3px;min-height:27px;height:auto;display:flex;flex-direction:column;justify-content:flex-start;flex-shrink:0;overflow:visible}
 .fld label .en{display:block;font-size:8.5px;color:#7c8896;font-weight:400;margin-top:1px;letter-spacing:.3px;line-height:1.2}
 
-.fld input,.fld select{height:44px;padding:0 8px;border:1px solid #cfdcec;border-radius:6px;font-size:13px;background:#fff;color:#1f2a37;font-weight:500;box-sizing:border-box;width:100%;appearance:none;-webkit-appearance:none;flex-shrink:0;transition:border-color .15s,box-shadow .15s;line-height:1.2}
+.fld input,.fld select{height:38px;padding:0 8px;border:1px solid #cfdcec;border-radius:6px;font-size:13px;background:#fff;color:#1f2a37;font-weight:500;box-sizing:border-box;width:100%;appearance:none;-webkit-appearance:none;flex-shrink:0;transition:border-color .15s,box-shadow .15s;line-height:1.2}
 .fld select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%231a5a92' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px}
 .fld input:focus,.fld select:focus{border-color:#1a5a92;outline:none;box-shadow:0 0 0 3px rgba(26,90,146,.18)}
 
@@ -75,7 +82,7 @@ body{font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFon
    ================================================================ */
 .result-card{display:flex;flex-direction:column;padding:10px 12px;border:1.5px solid #1a5a92;border-radius:9px;background:linear-gradient(160deg,#fff,#e8f1fb);box-sizing:border-box;position:relative;overflow:hidden;height:96px;box-shadow:0 2px 6px rgba(13,59,102,.10)}
 .result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0d3b66,#1a5a92,#0d3b66)}
-.result-card .lbl{font-size:11px;color:#5a6a7c;font-weight:600;line-height:1.25;letter-spacing:.2px;height:30px;display:flex;flex-direction:column;justify-content:flex-start;flex-shrink:0;overflow:hidden}
+.result-card .lbl{font-size:11px;color:#5a6a7c;font-weight:600;line-height:1.25;letter-spacing:.2px;min-height:30px;height:auto;display:flex;flex-direction:column;justify-content:flex-start;flex-shrink:0;overflow:visible}
 .result-card .lbl .en{display:block;font-size:8.5px;color:#98a4b0;font-weight:400;margin-top:1px;letter-spacing:.3px;line-height:1.2}
 .result-card .val{font-size:24px;font-weight:bold;color:#0d3b66;margin-top:auto;font-family:'SF Mono','Monaco','Consolas',monospace;letter-spacing:-.5px;line-height:1.1;flex-shrink:0}
 .result-card .val.warn{color:#cf1322}
@@ -88,7 +95,7 @@ body{font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFon
 .result-row.result-2{gap:8px}
 
 @media (min-width:600px){
- .result-row.result-2{grid-template-columns:repeat(4,1fr);gap:10px}
+ .result-row.result-2{grid-template-columns:repeat(2,1fr);gap:10px}
 }
 
 /* ================================================================
@@ -144,21 +151,46 @@ body{font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFon
 .foot-note .en{color:#98a4b0;font-size:9px}
 
 /* ================================================================
-   桌面 ≥600px：4 列布局、加大字号
+   平板 768px-1024px：优化布局
    ================================================================ */
-@media (min-width:600px){
+@media (min-width:600px) and (max-width:1024px){
+ body{padding:12px;font-size:14px}
+ .container{max-width:680px;border-radius:14px}
+ .body-pad{padding:12px 16px 16px}
+ .row{grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+ .row-2{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px}
+ .row.rwy-line{grid-template-columns:1fr 1fr 1.5fr}
+ .fld{height:86px;padding:7px 9px}
+ .fld label{font-size:11px;min-height:27px;height:auto}
+ .fld label .en{font-size:9px}
+ .fld input,.fld select{height:38px;padding:0 8px;font-size:12px;border-radius:5px}
+ .result-card{height:96px;padding:10px 12px}
+ .result-card .lbl{font-size:11px;min-height:30px;height:auto}
+ .result-card .val{font-size:24px}
+ .sec-title{font-size:12px;padding:5px 10px}
+ .sec-title .en{font-size:9px}
+ .result-row.result-4{grid-template-columns:repeat(2,1fr);gap:10px}
+ .analysis-row{font-size:11px}
+ .analysis-row .ar-val{font-size:14px}
+ .diagram-legend{font-size:10px;gap:12px 16px;padding:6px 10px}
+}
+
+/* ================================================================
+   桌面 ≥1024px：4 列布局、加大字号
+   ================================================================ */
+@media (min-width:1024px){
  body{padding:14px;font-size:14px}
  .container{max-width:770px;border-radius:12px}
  .body-pad{padding:14px 18px 18px}
  .row{grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
  .row-2{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px}
- .fld{height:96px;padding:9px 12px}
- .fld label{font-size:12px;height:28px}
+ .fld{height:88px;padding:7px 10px}
+ .fld label{font-size:12px;min-height:29px;height:auto}
  .fld label .en{font-size:9.5px}
- .fld input,.fld select{height:44px;padding:0 10px;font-size:13px;border-radius:5px}
+ .fld input,.fld select{height:38px;padding:0 10px;font-size:13px;border-radius:5px}
  .fld select{background-image:none;padding-right:10px}
  .result-card{height:100px;padding:10px 14px}
- .result-card .lbl{font-size:12px;height:30px}
+ .result-card .lbl{font-size:12px;min-height:32px;height:auto}
  .result-card .lbl .en{font-size:9.5px}
  .result-card .val{font-size:26px}
  .sec-title{font-size:13px;padding:6px 12px}
@@ -171,25 +203,50 @@ body{font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFon
 }
 
 /* ================================================================
+   移动端优化：标签文字溢出处理
+   ================================================================ */
+@media (max-width:600px){
+  .row.rwy-line{grid-template-columns:repeat(2,1fr)}
+  .row.rwy-line .fld:nth-child(3){grid-column:1/-1}
+  .row.config-row{grid-template-columns:repeat(2,1fr)}
+  .row.config-row .fld:first-child{grid-column:1/-1}
+  .fld{height:auto;min-height:80px;padding:7px 9px}
+  .fld label{font-size:11px;height:auto;min-height:29px;max-height:none;overflow:visible;line-height:1.15}
+  .fld label .en{font-size:9px;color:#98a4b0;white-space:normal;overflow:visible;text-overflow:clip}
+  .fld input,.fld select{height:38px;padding:0 8px;font-size:12px}
+  .result-card{height:auto;min-height:88px;padding:8px 10px}
+  .result-card .lbl{font-size:10.5px;height:auto;min-height:32px;max-height:none;overflow:visible}
+  .result-card .lbl .en{font-size:8.5px}
+  .result-card .val{font-size:22px}
+  .result-row.result-4{grid-template-columns:repeat(2,1fr);gap:8px}
+  .result-row.result-4 .result-card{padding:8px 8px}
+  .result-row.result-4 .result-card .lbl{font-size:9.5px}
+  .result-row.result-4 .result-card .val{font-size:20px}
+  .diagram-title{margin-top:8px}
+  .diagram-wrap{padding:7px 7px 4px}
+  #takeoff-diagram,#ld-diagram{height:110px}
+  .diagram-legend{gap:6px 10px;padding:6px 8px}
+  .legend-item{font-size:9.5px}
+}
+
+/* ================================================================
    极窄屏 <360px：保护布局
    ================================================================ */
 @media (max-width:359px){
  body{padding:4px}
- .body-pad{padding:8px 8px 10px}
- .row,.row-2,.result-row{grid-template-columns:repeat(2,1fr);gap:6px}
- .fld{height:auto;min-height:90px;padding:6px 6px}
- .fld label{font-size:10px}
+ .body-pad{padding:6px 6px 8px}
+ .row,.row-2,.result-row{grid-template-columns:repeat(2,1fr);gap:5px}
+ .row.rwy-line{grid-template-columns:repeat(2,1fr)}
+ .fld{min-height:80px;padding:6px 6px}
+ .fld label{font-size:10px;max-height:none}
  .fld label .en{font-size:8px}
- .fld input,.fld select{height:40px;padding:0 6px;font-size:12px;border-radius:5px}
- .result-card{height:auto;min-height:92px;padding:8px 8px}
- .result-card .lbl{font-size:10px}
- .result-card .val{font-size:20px}
- /* 极窄屏：着陆 4 卡同行压缩 */
- .result-row.result-4{grid-template-columns:repeat(4,1fr);gap:3px}
- .result-row.result-4 .result-card{padding:5px 4px;min-height:84px}
- .result-row.result-4 .result-card .lbl{font-size:8.5px;height:auto;margin-bottom:2px}
- .result-row.result-4 .result-card .lbl .en{font-size:7px}
- .result-row.result-4 .result-card .val{font-size:15px}
+ .fld input,.fld select{height:36px;padding:0 6px;font-size:11px}
+ .result-card{min-height:80px;padding:6px 6px}
+ .result-card .lbl{font-size:9.5px;max-height:none}
+ .result-card .val{font-size:18px}
+ .result-row.result-4 .result-card{padding:5px 5px;min-height:76px}
+ .result-row.result-4 .result-card .lbl{font-size:9px}
+ .result-row.result-4 .result-card .val{font-size:17px}
 }
 
 /* ================================================================
@@ -203,6 +260,16 @@ details.advanced[open]>summary::before{transform:rotate(90deg)}
 details.advanced>summary:active{background:rgba(13,59,102,.05)}
 details.advanced .adv-title{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0}
 details.advanced .adv-title .en{font-size:9px;color:#7c8896;font-weight:400;letter-spacing:.3px}
+
+.support-detail{margin-top:10px;border:1px solid #d8e3ef;border-radius:8px;background:#fff;overflow:hidden}
+.support-detail>summary{padding:8px 10px;cursor:pointer;list-style:none;background:linear-gradient(135deg,#fff,#eef1f4);font-size:12px;font-weight:700;color:#46576a;display:flex;align-items:center;gap:6px;border-left:3px solid #778899}
+.support-detail>summary::-webkit-details-marker{display:none}
+.support-detail>summary::before{content:'▶';font-size:8px;transition:transform .15s}
+.support-detail[open]>summary::before{transform:rotate(90deg)}
+.support-detail>summary span{font-size:9px;font-weight:400;color:#7c8896}
+.support-detail .diagram-wrap{margin:8px 8px 0}
+.support-detail .diagram-legend{margin:6px 8px 8px}
+.source-detail .foot-note{margin:0;border:0;border-radius:0}
 details.advanced>*:not(summary){padding:8px 10px 10px;background:#fff;border-top:1px solid #e7eef5}
 details.advanced .row,details.advanced .row-2,details.advanced .row-full{margin-bottom:0}
 
@@ -231,7 +298,7 @@ details.advanced .row,details.advanced .row-2,details.advanced .row-full{margin-
  body{padding:0;background:#fff;font-size:10.5px}
  .container{box-shadow:none;border:none;max-width:100%;border-radius:0}
  .body-pad{padding:6px 8px 4px}
- .actions,.diagram-legend,.tabs{display:none}
+ .actions,.diagram-legend,.tabs,.support-detail{display:none!important}
  .tab-pane{display:block!important}
 
  /* 分页：起飞完结后强制换页，着陆在新一页开头 */

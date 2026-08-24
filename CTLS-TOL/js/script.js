@@ -33,6 +33,10 @@ const PA_PER_HPA_M    = 30 * M_PER_FT;
 const TAILWIND_LIMIT_MS            = 5 * MS_PER_KT;
 const CROSSWIND_LIMIT_STRONG_MS    = 15 * MS_PER_KT;
 const CROSSWIND_LIMIT_CAUTION_MS   = 10 * MS_PER_KT;
+const POH_MASS_MIN_KG              = 400;
+const POH_MASS_MAX_KG              = 600;
+const POH_DA_MIN_FT                = 0;
+const POH_DA_MAX_FT                = 8000;
 
 /* ----- 高度 ----- */
 function pressureAltitudeM(elev_m, qnh_hpa) {
@@ -148,7 +152,10 @@ function takeoffDistance(flap, mass, da_ft) {
   return interpPerformance(TO_DATA[flap], mass, da_ft);
 }
 function landingDistance(flap, mass, da_ft) {
-  return interpPerformance(LD_DATA[flap], mass, da_ft);
+  // POH §5.2.3 defines 30°/35° as the same short-field procedure,
+  // while publishing a single performance chart labelled Flaps 30°.
+  const chartFlap = flap === 35 ? 30 : flap;
+  return LD_DATA[chartFlap] ? interpPerformance(LD_DATA[chartFlap], mass, da_ft) : null;
 }
 
 /* 失速速度 (POH §5.1.1 / §4) — 输出 kt
@@ -177,9 +184,91 @@ function setText(id, t){ const el = $(id); if (el) el.textContent = t; }
 function setVal(id, v){ const el = $(id); if (el) el.value = v; }
 function setHTML(id, h){ const el = $(id); if (el) el.innerHTML = h; }
 
+function rawNumber(id) {
+  const el = $(id);
+  if (!el || String(el.value).trim() === '') return null;
+  const value = Number(el.value);
+  return Number.isFinite(value) ? value : null;
+}
+
+function validatePerformanceInputs(prefix, mass, daFt) {
+  const fields = [
+    [prefix + '_elev_m', null, null, '机场标高'],
+    [prefix + '_qnh', 900, 1080, 'QNH'],
+    [prefix + '_oat_c', null, null, '外界温度'],
+    [prefix + '_wind_dir', 0, 360, '风向'],
+    [prefix + '_rwy_hdg', 0, 360, '跑道方向'],
+    [prefix + '_wind_ms', 0, 20, '风速'],
+    [prefix + '_slope', -4, 4, '跑道坡度']
+  ];
+  const errors = [];
+  fields.forEach(([id, min, max, label]) => {
+    const value = rawNumber(id);
+    if (value == null) errors.push(label + '必须为有效数字');
+    else if ((min != null && value < min) || (max != null && value > max)) {
+      errors.push(label + '必须在 ' + min + ' 至 ' + max + ' 之间');
+    }
+  });
+  if (!Number.isFinite(mass)) errors.push('重量必须为有效数字');
+  else if (mass < POH_MASS_MIN_KG || mass > POH_MASS_MAX_KG) {
+    errors.push('重量 ' + mass + ' kg 超出 POH 性能表范围 ' + POH_MASS_MIN_KG + '–' + POH_MASS_MAX_KG + ' kg');
+  }
+  if (!Number.isFinite(daFt)) errors.push('密度高度无法计算');
+  else if (daFt < POH_DA_MIN_FT || daFt > POH_DA_MAX_FT) {
+    errors.push('密度高度 ' + Math.round(daFt) + ' ft 超出 POH 性能表范围 ' + POH_DA_MIN_FT + '–' + POH_DA_MAX_FT + ' ft');
+  }
+  return errors;
+}
+
+function renderInputErrors(warningId, errors) {
+  const html = errors.map(message =>
+    '<div class="warning danger">⚠ ' + message + '<span class="en">Outside validated input or POH range</span></div>'
+  ).join('');
+  setHTML(warningId, html);
+}
+
+function clearTakeoffResults() {
+  setText('to_roll', '--');
+  setText('to_dist', '--');
+  setText('a_to_roll_pct', '--%');
+  setText('a_to_dist_pct', '--%');
+  setText('a_to_remaining', '--');
+  const remEl = $('a_to_remaining');
+  if (remEl) remEl.className = 'val danger';
+  const stEl = $('to_status');
+  if (stEl) {
+    stEl.className = 'ld-status danger';
+    stEl.innerHTML = '<span class="icon">⚠</span><span class="txt">输入超出验证范围，未计算<span class="en">No result — outside validated range</span></span>';
+  }
+  const svg = $('takeoff-diagram');
+  if (svg) svg.innerHTML = '<text x="50%" y="50%" text-anchor="middle" fill="#cf1322" font-size="12">输入超出验证范围，未计算</text>';
+}
+
+function clearLandingResults() {
+  setText('ld_roll', '--');
+  setText('ld_dist', '--');
+  setText('ld_vs0', '--');
+  setText('ld_vref', '--');
+  setText('a_ld_roll_pct', '--%');
+  setText('a_ld_dist_pct', '--%');
+  setText('a_ld_remaining', '--');
+  const remEl = $('a_ld_remaining');
+  if (remEl) remEl.className = 'val danger';
+  const stEl = $('ld_status');
+  if (stEl) {
+    stEl.className = 'ld-status danger';
+    stEl.innerHTML = '<span class="icon">⚠</span><span class="txt">输入超出验证范围，未计算<span class="en">No result — outside validated range</span></span>';
+  }
+  const svg = $('ld-diagram');
+  if (svg) svg.innerHTML = '<text x="50%" y="50%" text-anchor="middle" fill="#cf1322" font-size="12">输入超出验证范围，未计算</text>';
+}
+
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach((t, i) => {
-    t.classList.toggle('active', ['to', 'ld'][i] === name);
+    const active = ['to', 'ld'][i] === name;
+    t.classList.toggle('active', active);
+    t.setAttribute('aria-selected', String(active));
+    t.tabIndex = active ? 0 : -1;
   });
   document.querySelectorAll('.tab-pane').forEach(p => {
     p.classList.toggle('active', p.id === 'tab-' + name);
@@ -202,6 +291,14 @@ function calcTakeoff() {
   const da_m = densityAltitudeM(pa_m, oat_c);
   setVal('to_da_m', Math.round(da_m));
 
+  const da_ft = da_m * FT_PER_M;
+  const inputErrors = validatePerformanceInputs('to', rawNumber('to_tow'), da_ft);
+  if (inputErrors.length) {
+    renderInputErrors('warnings_to', inputErrors);
+    clearTakeoffResults();
+    return;
+  }
+
   const flap  = parseInt($('to_flap').value);
   const surf  = $('to_surface').value;
   const slope = num('to_slope', 0);
@@ -213,7 +310,6 @@ function calcTakeoff() {
   const wc = windComponents(wdir, rwyhdg, wms);
   setVal('to_crosswind_out', wc.crosswind.toFixed(1));
 
-  const da_ft = da_m * FT_PER_M;
   const base = takeoffDistance(flap, tow, da_ft);
   const twF = wc.tailwind > 0 ? tailwindFactor(wc.tailwind) : headwindFactor(wc.headwind);
   const rollCorrected = base.roll * twF * slopeFactorRoll(slope) * surfF.roll;
@@ -224,23 +320,27 @@ function calcTakeoff() {
 
   /* 警告 */
   let wHtml = '';
-  if (tow > MTOW) wHtml += '<div class="warning danger">⚠ 起飞重量 ' + tow + ' kg 超出 MTOW ' + MTOW + ' kg！<span class="en">TOW exceeds limit</span></div>';
   if (wc.tailwind > TAILWIND_LIMIT_MS) wHtml += '<div class="warning danger">⚠ 顺风 ' + wc.tailwind.toFixed(1) + ' m/s 超出 POH 限制 (≈5 节)<span class="en">Tailwind exceeds 5 kt limit</span></div>';
   else if (wc.tailwind > 0) wHtml += '<div class="warning caution">⚠ 存在顺风 ' + wc.tailwind.toFixed(1) + ' m/s (POH 限制 ≈5 节)<span class="en">Tailwind present</span></div>';
   if (wc.crosswind > CROSSWIND_LIMIT_STRONG_MS) wHtml += '<div class="warning danger">⚠ 侧风 ' + wc.crosswind.toFixed(1) + ' m/s 较大，请参考 POH 演示数据<span class="en">Strong crosswind</span></div>';
   else if (wc.crosswind > CROSSWIND_LIMIT_CAUTION_MS) wHtml += '<div class="warning caution">⚠ 侧风 ' + wc.crosswind.toFixed(1) + ' m/s 较强<span class="en">Strong crosswind</span></div>';
   if (da_m > 2300) wHtml += '<div class="warning caution">⚠ 密度高度 ' + Math.round(da_m) + ' m 较高，性能显著下降<span class="en">High density altitude</span></div>';
-  if (!wHtml) wHtml = '<div class="warning success">✓ 起飞参数符合限制<span class="en">Takeoff within limits</span></div>';
+  if (!wHtml) wHtml = '<div class="warning success">✓ 输入位于当前 POH 数据范围内<span class="en">Inputs within current POH data range</span></div>';
   setHTML('warnings_to', wHtml);
 
   /* 跑道分析 */
   const r = num('to_runway_avail', 0);
+  const stEl = $('to_status');
   if (r <= 0) {
     setText('a_to_roll_pct', '--%');
     setText('a_to_dist_pct', '--%');
     setText('a_to_remaining', '--');
     const remEl = $('a_to_remaining');
     if (remEl) remEl.className = 'val';
+    if (stEl) {
+      stEl.className = 'ld-status neutral';
+      stEl.innerHTML = '<span class="icon">📏</span><span class="txt">请输入 TORA 后显示跑道长度比较<span class="en">Enter TORA to compare calculated distance</span></span>';
+    }
   } else {
     const rollPct = (rollCorrected / r) * 100;
     const distPct = (distCorrected / r) * 100;
@@ -251,6 +351,15 @@ function calcTakeoff() {
     if (remEl) {
       remEl.textContent = (remain >= 0 ? '+' : '') + Math.round(remain) + ' m';
       remEl.className = 'val ' + (remain >= 0 ? 'ok' : 'danger');
+    }
+    if (stEl) {
+      if (remain < 0) {
+        stEl.className = 'ld-status danger';
+        stEl.innerHTML = '<span class="icon">🔴</span><span class="txt">计算起飞距离超过 TORA '+Math.round(Math.abs(remain))+' m<span class="en">Calculated takeoff distance exceeds TORA</span></span>';
+      } else {
+        stEl.className = 'ld-status ok';
+        stEl.innerHTML = '<span class="icon">✅</span><span class="txt">计算起飞距离未超过 TORA：余量 '+Math.round(remain)+' m<span class="en">Calculated takeoff distance is within TORA</span></span>';
+      }
     }
   }
 
@@ -276,6 +385,14 @@ function calcLanding() {
   const da_m = densityAltitudeM(pa_m, oat_c);
   setVal('ld_da_m', Math.round(da_m));
 
+  const da_ft = da_m * FT_PER_M;
+  const inputErrors = validatePerformanceInputs('ld', rawNumber('ld_ldw'), da_ft);
+  if (inputErrors.length) {
+    renderInputErrors('warnings_ld', inputErrors);
+    clearLandingResults();
+    return;
+  }
+
   const flap  = parseInt($('ld_flap').value);
   const surf  = $('ld_surface').value;
   const slope = num('ld_slope', 0);
@@ -287,13 +404,23 @@ function calcLanding() {
   const wc = windComponents(wdir, rwyhdg, wms);
   setVal('ld_crosswind_out', wc.crosswind.toFixed(1));
 
+  if (flap === 0) {
+    clearLandingResults();
+    setHTML('warnings_ld', '<div class="warning danger">⚠ POH 未发布襟翼 0°的着陆距离图表，无法进行跑道放行计算。襟翼控制失效程序建议进场速度 60 kt。<span class="en">No POH landing-distance chart for Flaps 0°. Flap-control-failure procedure recommends 60 kt approach speed.</span></div>');
+    const stEl = $('ld_status');
+    if (stEl) {
+      stEl.className = 'ld-status danger';
+      stEl.innerHTML = '<span class="icon">⚠</span><span class="txt">襟翼 0°：无经验证距离数据，不生成放行结果<span class="en">Flaps 0° — no validated distance data</span></span>';
+    }
+    return;
+  }
+
   /* 速度：VS0 / VREF */
   const vs0Kt  = stallSpeed(flap, ldw);
   const vrefKt = vs0Kt * 1.3;
   setText('ld_vs0',  Math.round(vs0Kt)  + ' kt');
   setText('ld_vref', Math.round(vrefKt) + ' kt');
 
-  const da_ft = da_m * FT_PER_M;
   const base = landingDistance(flap, ldw, da_ft);
   const twF = wc.tailwind > 0 ? tailwindFactor(wc.tailwind) : headwindFactor(wc.headwind);
   const rollCorrected = base.roll * twF * slopeFactorRoll(slope) * surfF.roll;
@@ -308,13 +435,13 @@ function calcLanding() {
 
   /* 警告 */
   let wHtml = '';
-  if (ldw > MLW) wHtml += '<div class="warning danger">⚠ 着陆重量 ' + ldw + ' kg 超出 MLW ' + MLW + ' kg！<span class="en">LDW exceeds limit</span></div>';
+  if (flap === 35) wHtml += '<div class="warning caution">ℹ 襟翼 35°按 POH 30°短场着陆性能图计算<span class="en">Flaps 35° uses the POH Flaps 30° short-field chart</span></div>';
   if (wc.tailwind > TAILWIND_LIMIT_MS) wHtml += '<div class="warning danger">⚠ 顺风 ' + wc.tailwind.toFixed(1) + ' m/s 超出 POH 限制 (≈5 节)<span class="en">Tailwind exceeds 5 kt limit</span></div>';
   else if (wc.tailwind > 0) wHtml += '<div class="warning caution">⚠ 存在顺风 ' + wc.tailwind.toFixed(1) + ' m/s (POH 限制 ≈5 节)<span class="en">Tailwind present</span></div>';
   if (wc.crosswind > CROSSWIND_LIMIT_STRONG_MS) wHtml += '<div class="warning danger">⚠ 侧风 ' + wc.crosswind.toFixed(1) + ' m/s 较大<span class="en">Strong crosswind</span></div>';
   else if (wc.crosswind > CROSSWIND_LIMIT_CAUTION_MS) wHtml += '<div class="warning caution">⚠ 侧风 ' + wc.crosswind.toFixed(1) + ' m/s 较强<span class="en">Strong crosswind</span></div>';
   if (da_m > 2300) wHtml += '<div class="warning caution">⚠ 密度高度 ' + Math.round(da_m) + ' m 较高，性能显著下降<span class="en">High density altitude</span></div>';
-  if (!wHtml) wHtml = '<div class="warning success">✓ 着陆参数符合限制<span class="en">Landing within limits</span></div>';
+  if (!wHtml) wHtml = '<div class="warning success">✓ 输入位于当前 POH 数据范围内<span class="en">Inputs within current POH data range</span></div>';
   setHTML('warnings_ld', wHtml);
 
   /* 跑道分析 */
@@ -341,7 +468,7 @@ function calcLanding() {
   if (stEl) {
     if (lda <= 0) {
       stEl.className = 'ld-status neutral';
-      stEl.innerHTML = '<span class="icon">📏</span><span class="txt">请输入 LDA 后显示安全状态<span class="en">Enter LDA to display safety status</span></span>';
+      stEl.innerHTML = '<span class="icon">📏</span><span class="txt">请输入 LDA 后显示跑道长度比较<span class="en">Enter LDA to compare calculated distance</span></span>';
     } else if (stopPoint > lda) {
       const over = Math.round(stopPoint - lda);
       stEl.className = 'ld-status danger';
@@ -349,7 +476,7 @@ function calcLanding() {
     } else {
       const remain = Math.round(lda - stopPoint);
       stEl.className = 'ld-status ok';
-      stEl.innerHTML = '<span class="icon">✅</span><span class="txt">跑道可用：剩余 ' + remain + ' m<span class="en">Landing Within LDA — ' + remain + ' m remaining</span></span>';
+      stEl.innerHTML = '<span class="icon">✅</span><span class="txt">计算停止点未超过 LDA：余量 ' + remain + ' m<span class="en">Calculated stop point is within LDA — ' + remain + ' m remaining</span></span>';
     }
   }
 
@@ -637,9 +764,18 @@ function calcAll() {
        - 起飞重量 ← 载重平衡页面发布的 ctls_tow
        - 着陆重量 = 起飞重量 − 燃油计划页面地面运转燃油重量 + 燃油计划页面航程油耗重量 */
     try {
-      const tow = parseFloat(localStorage.getItem('ctls_tow'));
-      const gop = parseFloat(localStorage.getItem('ctls_ground_op_kg'));
-      const trp = parseFloat(localStorage.getItem('ctls_trip_kg'));
+      const plan = window.CTLSFlightPlanStore && window.CTLSFlightPlanStore.read();
+      const tow = plan && plan.weightBalance
+        ? plan.weightBalance.towKg
+        : parseFloat(localStorage.getItem('ctls_tow'));
+      const compatibleFuelPlan = plan && plan.fuelPlan && plan.weightBalance &&
+        Math.abs(plan.fuelPlan.sourceFuelOnBoardL - plan.weightBalance.fuelOnBoardL) <= 0.1;
+      const gop = compatibleFuelPlan
+        ? plan.fuelPlan.groundOpKg
+        : (plan ? NaN : parseFloat(localStorage.getItem('ctls_ground_op_kg')));
+      const trp = compatibleFuelPlan
+        ? plan.fuelPlan.tripKg
+        : (plan ? NaN : parseFloat(localStorage.getItem('ctls_trip_kg')));
       if (isFinite(tow) && tow > 0) {
         const el = document.getElementById('to_tow');
         if (el) el.value = tow.toFixed(1);

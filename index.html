@@ -1,40 +1,46 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0d3b66">
-<meta http-equiv="refresh" content="0;url=CTLS-WB/index.html">
-<title>CTLS 飞行工具箱 · Flight Tools</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#071b2c">
+<title>CTLS 飞行工具箱 · Flight Tools</title><link rel="manifest" href="manifest.json"><link rel="icon" href="CTLS-WB/icons/icon.svg" type="image/svg+xml">
 <style>
-  *,*::before,*::after{box-sizing:border-box}
-  body{
-    margin:0;min-height:100vh;
-    display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,#0d3b66 0%,#1a5a92 100%);
-    font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    color:#fff;text-align:center;padding:24px;
-  }
-  .box{max-width:360px;width:100%}
-  .logo{background:#fff;border-radius:10px;padding:8px 16px;display:inline-block;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
-  .logo img{height:34px;display:block}
-  h1{font-size:22px;font-weight:600;margin:0 0 6px;letter-spacing:.5px}
-  .en{font-size:11px;color:#bcd4ea;letter-spacing:.4px;margin:0 0 22px}
-  a{
-    display:inline-block;padding:10px 24px;
-    background:rgba(255,255,255,.95);color:#0d3b66;
-    border-radius:7px;text-decoration:none;font-weight:600;font-size:13px;
-    transition:background .15s;
-  }
-  a:hover{background:#fff}
-</style>
-</head>
-<body>
-  <div class="box">
-    <div class="logo"><img src="APPLOGO.png" alt="AeroJones"></div>
-    <h1>CTLS 飞行工具箱</h1>
-    <p class="en">CTLS Flight Tools</p>
-    <a href="CTLS-WB/index.html">进入工具箱 Enter →</a>
-  </div>
-</body>
-</html>
+:root{--orange:#ff8a24;--line:rgba(255,255,255,.22)}*,*::before,*::after{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}body{min-height:100vh;color:#fff;background:#102d40;overflow-x:hidden}.scene{position:relative;min-height:100vh;isolation:isolate;display:flex;flex-direction:column;background:url('assets/WSP_5686.jpg') 57% center/cover no-repeat}.scene::before{content:'';position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(3,20,34,.92),rgba(4,28,46,.68) 34%,rgba(4,25,41,.15) 66%,rgba(3,19,32,.24))}.scene::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(2,15,25,.58),transparent 24%,transparent 58%,rgba(2,17,28,.9));pointer-events:none}.topbar{height:76px;padding:0 clamp(24px,5vw,80px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(4,24,39,.18);backdrop-filter:blur(12px)}.brand{display:flex;align-items:center;gap:13px}.brand-mark{width:39px;height:39px;border:1px solid rgba(255,255,255,.5);border-radius:50%;display:grid;place-items:center;font-size:18px;transform:rotate(-12deg);box-shadow:inset 0 0 0 5px rgba(255,255,255,.08)}.brand strong{font-size:15px;letter-spacing:1.6px}.brand small{display:block;margin-top:2px;color:#a9c8da;font-size:9px;letter-spacing:2.2px}.status{display:flex;align-items:center;gap:9px;color:#c8e3ef;font-size:10px;letter-spacing:1.5px}.pulse{width:7px;height:7px;border-radius:50%;background:#72e5ad;box-shadow:0 0 0 5px rgba(114,229,173,.12)}main{width:min(1180px,calc(100% - 48px));margin:auto;display:grid;grid-template-columns:minmax(320px,510px) 1fr;align-items:end;padding:clamp(48px,9vh,110px) 0 44px}.hero{align-self:center;padding-bottom:7vh}.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:19px;color:#9fd8ef;font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase}.eyebrow::before{content:'';width:34px;height:2px;background:var(--orange)}h1{margin:0;font-size:clamp(44px,5vw,72px);line-height:.98;letter-spacing:-2.5px;text-shadow:0 8px 28px rgba(0,0,0,.3)}h1 span{display:block;margin-top:13px;font-size:.32em;font-weight:400;letter-spacing:6px;color:#d7edf6;text-transform:uppercase}.intro{max-width:430px;margin:24px 0 0;color:#c4dce7;font-size:13px;line-height:1.85;letter-spacing:.4px}.flight-line{display:flex;align-items:center;gap:13px;margin-top:28px;color:#bcd5e1;font:10px/1.2 Consolas,monospace;letter-spacing:1px}.flight-line i{display:block;width:66px;height:1px;background:linear-gradient(90deg,var(--orange),transparent)}.panel{grid-column:1/-1;margin-top:34px}.panel-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:13px}.panel-head strong{font-size:11px;letter-spacing:2px}.panel-head span{color:#9eb8c7;font-size:9px;letter-spacing:1.5px;text-transform:uppercase}.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.tool{position:relative;min-height:154px;padding:22px;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:linear-gradient(145deg,rgba(15,50,72,.74),rgba(6,30,48,.6));box-shadow:0 18px 50px rgba(0,0,0,.2);backdrop-filter:blur(18px) saturate(130%);overflow:hidden;transition:.22s}.tool::before{content:'';position:absolute;left:0;top:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),transparent 60%)}.tool::after{content:'↗';position:absolute;right:18px;top:17px;color:rgba(255,255,255,.45);font-size:14px;transition:.22s}.tool:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.48);background:linear-gradient(145deg,rgba(15,61,91,.88),rgba(5,32,51,.76))}.tool:hover::after{transform:translate(3px,-3px);color:#fff}.tool:nth-child(1){--accent:#7dd3fc}.tool:nth-child(2){--accent:#ffab57}.tool:nth-child(3){--accent:#79dfaf}.tool-top{display:flex;align-items:center;gap:12px}.icon{width:38px;height:38px;border:1px solid rgba(255,255,255,.2);border-radius:10px;display:grid;place-items:center;color:var(--accent);background:rgba(255,255,255,.06)}.icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.name{font-size:17px;font-weight:650}.tool-en{display:block;margin-top:3px;color:#9fb9c8;font-size:9px;letter-spacing:1.2px;text-transform:uppercase}.desc{display:block;margin-top:24px;color:#c4d9e3;font-size:11px;line-height:1.6}.index{position:absolute;right:18px;bottom:14px;color:rgba(255,255,255,.17);font:bold 28px/1 Consolas,monospace}footer{padding:15px clamp(24px,5vw,80px);display:flex;justify-content:space-between;color:rgba(214,235,244,.56);font-size:8px;letter-spacing:1.4px;border-top:1px solid rgba(255,255,255,.1);text-transform:uppercase}
+@media(max-width:760px){.scene{background-position:61% center}.scene::before{background:linear-gradient(180deg,rgba(3,20,34,.82),rgba(4,24,39,.3) 36%,rgba(2,17,28,.94) 70%)}.topbar{height:64px;padding:0 18px}.status{display:none}main{width:calc(100% - 28px);display:block;padding:42px 0 24px}.hero{padding:0 5px 20vh}h1{font-size:43px}h1 span{font-size:13px;letter-spacing:4px}.intro{font-size:11px;max-width:320px}.flight-line{display:none}.panel{margin-top:0}.tools{grid-template-columns:1fr;gap:9px}.tool{min-height:105px;padding:16px 18px}.desc{margin-top:11px}.index{font-size:22px}.panel-head{padding:0 3px}footer{padding:13px 18px}.footer-hide{display:none}}@media(max-width:380px){.hero{padding-bottom:14vh}h1{font-size:38px}.intro{margin-top:16px}.tool{min-height:98px}.desc{font-size:10px}}@media(prefers-reduced-motion:reduce){.tool,.tool::after{transition:none}}
+.scene{background-image:url('assets/WSP_5686-web.webp')}
+/* 首页始终限制在浏览器 100% 缩放的一屏内 */
+html,body{height:100%;overflow:hidden}
+.scene{height:100svh;min-height:0;overflow:hidden}
+main{flex:1;min-height:0;margin:0 auto}
+.topbar,footer{flex-shrink:0}
+@media(max-width:760px){
+  .topbar{height:56px}
+  main{display:flex;flex-direction:column;justify-content:center;padding:14px 0 10px}
+  .hero{padding:0 5px clamp(32px,7vh,58px)}
+  .eyebrow{margin-bottom:10px;font-size:8px}
+  h1{font-size:clamp(32px,10vw,42px)}
+  h1 span{margin-top:8px;font-size:11px}
+  .intro{margin-top:12px;line-height:1.55}
+  .panel-head{margin-bottom:7px}
+  .tools{gap:6px}
+  .tool{min-height:78px;height:78px;padding:10px 14px;border-radius:12px}
+  .icon{width:34px;height:34px}
+  .name{font-size:15px}
+  .desc{margin-top:5px;font-size:9px;line-height:1.35}
+  .index{right:14px;bottom:9px;font-size:18px}
+  .tool::after{right:14px;top:11px}
+  footer{padding:9px 18px}
+}
+@media(max-width:380px),(max-height:700px){
+  .topbar{height:50px}.brand-mark{width:32px;height:32px}.brand strong{font-size:12px}
+  main{padding:8px 0}.hero{padding-bottom:20px}.intro{display:none}
+  .tool{height:70px;min-height:70px}.desc{display:none}.panel-head{margin-bottom:5px}
+  footer{padding:7px 18px}
+}
+</style></head>
+<body><div class="scene"><header class="topbar"><div class="brand"><div class="brand-mark">✈</div><div><strong>CTLS FLIGHT TOOLS</strong><small>Flight Operations Suite</small></div></div><div class="status"><span class="pulse"></span>System Ready</div></header>
+<main><section class="hero"><div class="eyebrow">Pilot workspace · 01</div><h1>飞行工具箱<span>CTLS Flight Tools</span></h1><p class="intro">从载重平衡、燃油计划到起降性能，将每一项飞行前准备汇集于同一个清晰、可靠的工作空间。</p></section>
+<section class="panel" aria-label="飞行工具"><div class="panel-head"><strong>选择飞行任务</strong><span>Select a flight module</span></div><div class="tools">
+<a class="tool" href="CTLS-WB/index.html"><div class="tool-top"><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 6h14M7 6l-4 8h8L7 6Zm10 0-4 8h8l-4-8Z"/><path d="M4 14c0 2 6 2 6 0M14 14c0 2 6 2 6 0"/></svg></span><span><span class="name">载重平衡</span><span class="tool-en">Weight &amp; Balance</span></span></div><span class="desc">核对重量、重心与各飞行阶段包线</span><b class="index">01</b></a>
+<a class="tool" href="CTLS-FUEL/index.html"><div class="tool-top"><span class="icon"><svg viewBox="0 0 24 24"><path d="M6 21V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v17M5 21h13M8 6h7v5H8zM17 7h2l2 2v7a2 2 0 0 1-4 0v-4"/></svg></span><span><span class="name">燃油计划</span><span class="tool-en">Fuel Planning</span></span></div><span class="desc">计算地面、航程与备用燃油需求</span><b class="index">02</b></a>
+<a class="tool" href="CTLS-TOL/index.html"><div class="tool-top"><span class="icon"><svg viewBox="0 0 24 24"><path d="m2 16 8-4V5.5a2 2 0 0 1 4 0V12l8 4v2l-8-2v3l2 2v1l-4-1-4 1v-1l2-2v-3l-8 2v-2Z"/></svg></span><span><span class="name">起飞与着陆性能</span><span class="tool-en">Takeoff &amp; Landing</span></span></div><span class="desc">比较性能距离、风分量与可用跑道</span><b class="index">03</b></a>
+</div></section></main><footer><span>AEROJONES AVIATION · Flight Operations</span><span class="footer-hide">Aircraft AJ-2111 · Photo WSP_5686</span></footer></div><script src="CTLS-common/js/pwa-register.js"></script></body></html>

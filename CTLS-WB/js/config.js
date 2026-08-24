@@ -2,7 +2,7 @@ const CG_FWD = 0.325;
 const CG_AFT = 0.420;
 const MIN_MASS = 300;
 const MAX_MASS = 600;
-const FUEL_DENSITY = 0.725;
+const FUEL_DENSITY = 0.72;
 const MAC_LENGTH = 1.280;
 
 const ARM = {

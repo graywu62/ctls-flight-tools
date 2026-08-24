@@ -78,6 +78,7 @@ function lookupCruisePerf(altitudeFt, powerKey) {
   const perf = window.POH_DATA.CRUISE_PERFORMANCE;
   if (!perf) return null;
   const alts = getAltitudes();
+  if (!Number.isFinite(altitudeFt)) return null;
   const clamped = clampAltitude(altitudeFt);
 
   // 精确命中
@@ -188,10 +189,20 @@ function renderResults(input, c) {
   setText('res_trip',      dTrip.toFixed(1));
   setText('res_reserve',   dRes.toFixed(1));
 
-  /* === 用户显式要求：跨表数据发布（地面运转 / 航程 → kg，Avgas 0.725 kg/L） === */
+  /* 跨表数据发布（地面运转 / 航程 → kg，使用统一 AVGAS 密度常量） */
   try {
-    localStorage.setItem('ctls_ground_op_kg', (dGround * 0.725).toFixed(1));
-    localStorage.setItem('ctls_trip_kg',      (dTrip   * 0.725).toFixed(1));
+    const density = window.POH_DATA.FUEL_DENSITY_KG_PER_L;
+    const groundOpKg = dGround * density;
+    const tripKg = dTrip * density;
+    localStorage.setItem('ctls_ground_op_kg', groundOpKg.toFixed(1));
+    localStorage.setItem('ctls_trip_kg',      tripKg.toFixed(1));
+    if (window.CTLSFlightPlanStore) {
+      window.CTLSFlightPlanStore.publishFuelPlan({
+        sourceFuelOnBoardL: input.fuelOnBoardL,
+        groundOpKg,
+        tripKg
+      });
+    }
   } catch(e){}
 
   // 公式行动态展示
@@ -208,6 +219,19 @@ function renderResults(input, c) {
   setText('res_endurance', formatHm(dispEndHr));
   setText('fx_endurance',  dispLand.toFixed(1) + ' L ÷ ' + fmtLhr(c.burnLph) + ' L/hr');
 
+  // 可视化油量尺：仅呈现现有计算结果，不参与计算。
+  const tankCapacity = window.POH_DATA.TANK_CAPACITY_L;
+  const gaugeFill = document.getElementById('fuel_gauge_fill');
+  const requiredMarker = document.getElementById('fuel_required_marker');
+  if (gaugeFill) {
+    const fuelPercent = Math.max(0, Math.min(100, input.fuelOnBoardL / tankCapacity * 100));
+    gaugeFill.style.width = fuelPercent + '%';
+  }
+  if (requiredMarker) {
+    const requiredPercent = Math.max(0, Math.min(100, dispReq / tankCapacity * 100));
+    requiredMarker.style.left = requiredPercent + '%';
+  }
+
   // 备用时间：VFR/IFR → 同步默认值并禁用；CUSTOM → 允许填写，保留用户输入
   const rt = document.getElementById('reserve_time');
   if (rt) {
@@ -221,24 +245,41 @@ function renderResults(input, c) {
   }
 }
 
-function renderStatus(c) {
+function renderStatus(c, input) {
   const bar = document.getElementById('fuel_status');
   if (!bar) return;
 
+  if (input.fuelOnBoardL < 0 || input.fuelOnBoardL > window.POH_DATA.TANK_CAPACITY_L) {
+    bar.className = 'status-bar status-danger';
+    bar.querySelector('.status-title').textContent = '机上燃油超出范围';
+    bar.querySelector('.status-title-en').textContent = 'INVALID FUEL LOAD';
+    bar.querySelector('.status-desc').textContent = '机上燃油必须位于 0–126 L。';
+    bar.querySelector('.status-desc-en').textContent = 'Fuel on board must be within 0–126 L.';
+    return;
+  }
   const ok = c.landingFuelL >= 0;
-  if (ok) {
-    bar.className = 'status-bar status-ok';
-    bar.querySelector('.status-title').textContent    = '燃油充足';
-    bar.querySelector('.status-title-en').textContent = 'FUEL OK';
-    bar.querySelector('.status-desc').textContent    = '机上燃油满足本次飞行需求。';
-    bar.querySelector('.status-desc-en').textContent = 'Fuel on board is sufficient for this flight.';
-  } else {
+  const alts = getAltitudes();
+  const altitudeOutside = input.altitudeFt < alts[0] || input.altitudeFt > alts[alts.length - 1];
+  if (!ok) {
     bar.className = 'status-bar status-danger';
     bar.querySelector('.status-title').textContent    = '燃油不足';
     bar.querySelector('.status-title-en').textContent = 'NOT ENOUGH FUEL';
     const shortBy = Math.abs(c.landingFuelL).toFixed(1);
     bar.querySelector('.status-desc').textContent    = '当前机上燃油不足以完成本次飞行。';
     bar.querySelector('.status-desc-en').textContent = 'Short by ' + shortBy + ' L — Add fuel before flight.';
+  } else if (altitudeOutside) {
+    const appliedAltitude = clampAltitude(input.altitudeFt);
+    bar.className = 'status-bar status-caution';
+    bar.querySelector('.status-title').textContent = '已采用边界高度';
+    bar.querySelector('.status-title-en').textContent = 'BOUNDARY ALTITUDE APPLIED';
+    bar.querySelector('.status-desc').textContent = '燃油充足；性能数据已按 ' + appliedAltitude + ' ft 计算。';
+    bar.querySelector('.status-desc-en').textContent = 'Fuel sufficient; performance calculated at ' + appliedAltitude + ' ft.';
+  } else {
+    bar.className = 'status-bar status-ok';
+    bar.querySelector('.status-title').textContent    = '燃油充足';
+    bar.querySelector('.status-title-en').textContent = 'FUEL OK';
+    bar.querySelector('.status-desc').textContent    = '机上燃油满足本次飞行需求。';
+    bar.querySelector('.status-desc-en').textContent = 'Fuel on board is sufficient for this flight.';
   }
 }
 
@@ -280,12 +321,50 @@ function computeAll(input) {
   return { burnLph, groundOpFuelL, tripFuelL, reserveFuelL, requiredFuelL, landingFuelL, enduranceHr, perf };
 }
 
+function updateMobilePOH(powerKey, altitudeFt) {
+  const perf = lookupCruisePerf(altitudeFt, powerKey);
+  const clampedAlt = clampAltitude(altitudeFt);
+  setText('mob_poh_power', powerKey + (powerKey === '50%' ? ' (Economy)' : powerKey === '65%' ? ' (Normal)' : ' (Fast)'));
+  setText('mob_poh_alt', clampedAlt + ' ft');
+  setText('mob_poh_ias', perf ? perf.ias : '--');
+  setText('mob_poh_tas', perf ? perf.tas : '--');
+  setText('mob_poh_rpm', perf ? perf.rpm : '--');
+  setText('mob_poh_burn', perf ? perf.burn : '--');
+
+  document.querySelectorAll('.mob-poh-alt-card').forEach(card => {
+    card.classList.remove('active');
+  });
+  const activeCard = document.getElementById('mob_poh_alt_' + clampedAlt);
+  if (activeCard) {
+    activeCard.classList.add('active');
+  }
+}
+
+function togglePOHDetail() {
+  const detail = document.getElementById('mob_poh_detail');
+  const toggle = document.getElementById('mob_poh_toggle');
+  const icon = toggle ? toggle.querySelector('.mob-poh-toggle-icon') : null;
+  const text = toggle ? toggle.querySelector('.mob-poh-toggle-text') : null;
+
+  if (detail) {
+    detail.classList.toggle('open');
+    if (toggle) toggle.setAttribute('aria-expanded', String(detail.classList.contains('open')));
+    if (icon) {
+      icon.style.transform = detail.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+    if (text) {
+      text.textContent = detail.classList.contains('open') ? '收起' : '查看全部数据';
+    }
+  }
+}
+
 function updateAll() {
   const input    = readInputs();
   const computed = computeAll(input);
   renderResults(input, computed);
   highlightPOHTable(input.cruisePower, input.altitudeFt);
-  renderStatus(computed);
+  updateMobilePOH(input.cruisePower, input.altitudeFt);
+  renderStatus(computed, input);
 }
 
 
@@ -358,10 +437,14 @@ function attachListeners() {
 }
 
 function init() {
-  applyDefaults();
+  const restoredDraft = window.CTLSToolDraftStore && window.CTLSToolDraftStore.restore();
+  if (!restoredDraft) applyDefaults();
   /* === 用户显式要求：跨表数据载入（载重平衡页面发布的可用燃油 L） === */
   try {
-    const v = parseFloat(localStorage.getItem('ctls_v_fuel'));
+    const plan = window.CTLSFlightPlanStore && window.CTLSFlightPlanStore.read();
+    const v = plan && plan.weightBalance
+      ? plan.weightBalance.fuelOnBoardL
+      : parseFloat(localStorage.getItem('ctls_v_fuel'));
     const el = document.getElementById('fuel_on_board');
     if (el && isFinite(v) && v >= 0) el.value = v;
   } catch(e){}

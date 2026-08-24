@@ -7,9 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>CTLS 燃油计划 | Fuel Planning</title>
+<link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="stylesheet" href="../CTLS-common/css/header.css">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=1.1.1">
 </head>
 <body>
 
@@ -19,7 +20,6 @@
        Header — 与 CTLS-TOL 共用样式
        ============================================================ -->
   <header class="app-header">
-    <div class="logo"><img src="assets/威翔logo.png" alt="AeroJones Aviation"></div>
     <div class="titles">
       <h1>CTLS 燃油计划</h1>
       <p class="subtitle">AeroJones CTLS · Fuel Planning</p>
@@ -33,7 +33,7 @@
          ============================================================ -->
     <div class="sec-title-bar">
       <span class="sec-badge">1</span>
-      <span class="sec-text">飞行信息 <span class="en">FLIGHT INFORMATION</span></span>
+      <span class="sec-text">任务时间 <span class="en">MISSION TIME</span></span>
     </div>
 
     <div class="info-grid-2">
@@ -106,7 +106,7 @@
           <small>Cruise Altitude</small>
         </div>
         <div class="alt-input-wrap">
-          <input type="number" id="cruise_altitude" class="alt-input" min="0" max="18000" step="100" value="6000">
+          <input type="number" id="cruise_altitude" class="alt-input" min="3000" max="9000" step="100" value="6000">
           <span class="alt-unit">ft</span>
         </div>
       </div>
@@ -224,6 +224,115 @@
       </table>
     </div>
 
+    <div class="mobile-poh-summary">
+      <div class="mob-poh-header">
+        <span class="mob-poh-title">巡航性能</span>
+        <span class="mob-poh-power" id="mob_poh_power">65% (Normal)</span>
+      </div>
+
+      <div class="mob-poh-selected">
+        <div class="mob-poh-selected-alt" id="mob_poh_alt">6000 ft</div>
+        <div class="mob-poh-grid">
+          <div class="mob-poh-item">
+            <div class="mob-poh-lbl">IAS</div>
+            <div class="mob-poh-val" id="mob_poh_ias">88</div>
+            <div class="mob-poh-unit">kt</div>
+          </div>
+          <div class="mob-poh-item">
+            <div class="mob-poh-lbl">TAS</div>
+            <div class="mob-poh-val" id="mob_poh_tas">97</div>
+            <div class="mob-poh-unit">kt</div>
+          </div>
+          <div class="mob-poh-item">
+            <div class="mob-poh-lbl">RPM</div>
+            <div class="mob-poh-val" id="mob_poh_rpm">4450</div>
+            <div class="mob-poh-unit"></div>
+          </div>
+          <div class="mob-poh-item">
+            <div class="mob-poh-lbl">Fuel Burn</div>
+            <div class="mob-poh-val" id="mob_poh_burn">18.3</div>
+            <div class="mob-poh-unit">L/hr</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mob-poh-toggle" id="mob_poh_toggle" role="button" tabindex="0" aria-expanded="false" onclick="togglePOHDetail()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePOHDetail()}">
+        <span class="mob-poh-toggle-icon">▼</span>
+        <span class="mob-poh-toggle-text">查看全部数据</span>
+      </div>
+
+      <div class="mob-poh-detail" id="mob_poh_detail">
+        <div class="mob-poh-section">
+          <div class="mob-poh-section-title">所有高度数据</div>
+          <div class="mob-poh-alt-cards">
+            <div class="mob-poh-alt-card" id="mob_poh_alt_3000">
+              <div class="mob-poh-alt-header">3000 ft</div>
+              <div class="mob-poh-alt-row">
+                <span class="mob-poh-alt-power">50%</span>
+                <span class="mob-poh-alt-ias">IAS:83</span>
+                <span class="mob-poh-alt-tas">TAS:91</span>
+                <span class="mob-poh-alt-burn">15.0L/hr</span>
+              </div>
+              <div class="mob-poh-alt-row">
+                <span class="mob-poh-alt-power">65%</span>
+                <span class="mob-poh-alt-ias">IAS:94</span>
+                <span class="mob-poh-alt-tas">TAS:103</span>
+                <span class="mob-poh-alt-burn">18.3L/hr</span>
+              </div>
+              <div class="mob-poh-alt-row">
+                <span class="mob-poh-alt-power">75%</span>
+                <span class="mob-poh-alt-ias">IAS:101</span>
+                <span class="mob-poh-alt-tas">TAS:110</span>
+                <span class="mob-poh-alt-burn">21.2L/hr</span>
+              </div>
+            </div>
+            <div class="mob-poh-alt-card" id="mob_poh_alt_6000">
+              <div class="mob-poh-alt-header">6000 ft</div>
+              <div class="mob-poh-alt-row">
+                <span class="mob-poh-alt-power">50%</span>
+                <span class="mob-poh-alt-ias">IAS:77</span>
+                <span class="mob-poh-alt-tas">TAS:85</span>
+                <span class="mob-poh-alt-burn">15.0L/hr</span>
+              </div>
+              <div class="mob-poh-alt-row">
+                <span class="mob-poh-alt-power">65%</span>
+                <span class="mob-poh-alt-ias">IAS:88</span>
+                <span class="mob-poh-alt-tas">TAS:97</span>
+                <span class="mob-poh-alt-burn">18.3L/hr</span>
+              </div>
+              <div class="mob-poh-alt-row">
+                <span class="mob-poh-alt-power">75%</span>
+                <span class="mob-poh-alt-ias">IAS:94</span>
+                <span class="mob-poh-alt-tas">TAS:104</span>
+                <span class="mob-poh-alt-burn">21.2L/hr</span>
+              </div>
+            </div>
+            <div class="mob-poh-alt-card" id="mob_poh_alt_9000">
+              <div class="mob-poh-alt-header">9000 ft</div>
+              <div class="mob-poh-alt-row">
+                <span class="mob-poh-alt-power">50%</span>
+                <span class="mob-poh-alt-ias">IAS:72</span>
+                <span class="mob-poh-alt-tas">TAS:79</span>
+                <span class="mob-poh-alt-burn">15.0L/hr</span>
+              </div>
+              <div class="mob-poh-alt-row">
+                <span class="mob-poh-alt-power">65%</span>
+                <span class="mob-poh-alt-ias">IAS:82</span>
+                <span class="mob-poh-alt-tas">TAS:90</span>
+                <span class="mob-poh-alt-burn">18.3L/hr</span>
+              </div>
+              <div class="mob-poh-alt-row">
+                <span class="mob-poh-alt-power">75%</span>
+                <span class="mob-poh-alt-ias">IAS:88</span>
+                <span class="mob-poh-alt-tas">TAS:96</span>
+                <span class="mob-poh-alt-burn">21.2L/hr</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ============================================================
          Section 3 + 5 — Fuel Calculation (left) / Fuel Summary (right)
          ============================================================ -->
@@ -233,7 +342,7 @@
       <div class="calc-col">
         <div class="sec-title-bar">
           <span class="sec-badge">3</span>
-          <span class="sec-text">燃油计算 <span class="en">FUEL CALCULATION</span></span>
+          <span class="sec-text">燃油策略 <span class="en">FUEL STRATEGY</span></span>
         </div>
 
         <div class="calc-card">
@@ -299,8 +408,8 @@
       <!-- ===== Fuel Summary (right) ===== -->
       <div class="summary-col">
         <div class="sec-title-bar">
-          <span class="sec-badge sec-badge-5">5</span>
-          <span class="sec-text">计算结果 <span class="en">FUEL SUMMARY</span></span>
+          <span class="sec-badge">4</span>
+          <span class="sec-text">放行结果 <span class="en">DISPATCH RESULT</span></span>
         </div>
 
         <!-- Fuel On Board — 仅留用户填写窗口（无结果） -->
@@ -313,9 +422,14 @@
             <div class="summary-formula">&nbsp;</div>
           </div>
           <div class="summary-input">
-            <input type="number" id="fuel_on_board" step="0.5" min="0" max="80" value="80">
+            <input type="number" id="fuel_on_board" step="0.5" min="0" max="126" value="80">
             <span class="summary-input-unit">L</span>
           </div>
+          <div class="fuel-gauge" aria-hidden="true">
+            <span class="fuel-gauge-fill" id="fuel_gauge_fill"></span>
+            <span class="fuel-gauge-required" id="fuel_required_marker"></span>
+          </div>
+          <div class="fuel-gauge-scale"><span>0 L</span><span>所需燃油标记</span><span>126 L</span></div>
         </div>
 
         <div class="summary-card">
@@ -387,8 +501,12 @@
   </div>
 </div>
 
-<script src="data/pohData.js"></script>
-<script src="js/script.js"></script>
+<script src="data/pohData.js?v=1.1.0"></script>
+<script src="../CTLS-common/js/flight-plan-store.js"></script>
+<script src="../CTLS-common/js/tool-draft-store.js"></script>
+<script src="../CTLS-common/js/form-accessibility.js"></script>
+<script src="js/script.js?v=1.2.0"></script>
 <script src="../CTLS-common/js/shell-switch.js"></script>
+<script src="../CTLS-common/js/pwa-register.js"></script>
 </body>
 </html>
