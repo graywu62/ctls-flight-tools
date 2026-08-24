@@ -36,6 +36,47 @@ main{flex:1;min-height:0;margin:0 auto}
   .tool{height:70px;min-height:70px}.desc{display:none}.panel-head{margin-bottom:5px}
   footer{padding:7px 18px}
 }
+/* 手机版首页：原始照片只做等比例裁剪，不拉伸、不重绘 */
+@media(max-width:760px){
+  html,body{height:auto;min-height:100%;overflow-x:hidden;overflow-y:auto;background:#061827}
+  .scene{height:auto;min-height:100svh;overflow:visible;background:#061827;display:block}
+  .scene::before,.scene::after{display:none}
+  .topbar{height:66px;padding:0 18px;background:#071d2d;border-bottom:1px solid rgba(178,218,240,.28);backdrop-filter:none}
+  .brand-mark{width:38px;height:38px}
+  .brand strong{font-size:15px;letter-spacing:2.4px}
+  .brand small{font-size:9px}
+  main{width:100%;margin:0;padding:0 0 18px;display:block}
+  .hero{height:230px;padding:0;position:relative;background-image:linear-gradient(180deg,rgba(4,23,37,.18),rgba(3,19,31,.12) 55%,#061a2a 100%),url('assets/WSP_5686-web.webp');background-size:cover;background-position:66% 50%;background-repeat:no-repeat}
+  .hero .eyebrow,.hero .intro{display:none}
+  .hero h1{position:absolute;left:20px;top:48px;margin:0;font-size:35px;line-height:1;letter-spacing:1px;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+  .hero h1::before{content:'';display:block;width:30px;height:3px;margin-bottom:12px;background:var(--orange)}
+  .hero h1 span{margin-top:9px;font-size:11px;font-weight:400;letter-spacing:4px;color:#c3e7f6}
+  .panel{width:auto;margin:0;padding:0 16px}
+  .panel-head{height:34px;margin:0;padding:0;display:flex;align-items:center;justify-content:flex-start;gap:9px}
+  .panel-head::before{content:'';width:4px;height:18px;border-radius:2px;background:#69c9e9}
+  .panel-head strong{font-size:12px;letter-spacing:1px}
+  .panel-head span{font-size:8px;letter-spacing:1.5px}
+  .tools{display:grid;grid-template-columns:1fr;gap:10px}
+  .tool{height:116px;min-height:116px;padding:14px;display:flex;flex-direction:column;justify-content:center;border-radius:15px;background:linear-gradient(135deg,rgba(14,49,73,.94),rgba(4,28,47,.98));backdrop-filter:none}
+  .tool:hover{transform:none}
+  .tool::before{width:3px;height:100%;background:var(--accent)}
+  .tool::after{right:26px;top:44px;font-size:25px}
+  .tool-top{gap:12px}
+  .icon{width:54px;height:54px;border-radius:13px;flex:0 0 54px}
+  .icon svg{width:31px;height:31px}
+  .name{font-size:20px}
+  .tool-en{margin-top:4px;font-size:9px;letter-spacing:1.6px;color:var(--accent)}
+  .desc{margin:8px 0 0 66px;font-size:10px;line-height:1.35;white-space:nowrap}
+  .index{display:none}
+}
+@media(max-width:380px),(max-height:700px){
+  .topbar{height:58px}
+  .hero{height:190px}
+  .hero h1{top:34px;font-size:32px}
+  .panel{padding:0 12px 12px}
+  .tool{height:96px;min-height:96px}
+  .desc{display:block;margin-top:5px;font-size:9px}
+}
 </style></head>
 <body><div class="scene"><header class="topbar"><div class="brand"><div class="brand-mark">✈</div><div><strong>CTLS FLIGHT TOOLS</strong><small>Flight Operations Suite</small></div></div><div class="status"><span class="pulse"></span>System Ready</div></header>
 <main><section class="hero"><div class="eyebrow">Pilot workspace · 01</div><h1>飞行工具箱<span>CTLS Flight Tools</span></h1><p class="intro">从载重平衡、燃油计划到起降性能，将每一项飞行前准备汇集于同一个清晰、可靠的工作空间。</p></section>
@@ -43,4 +84,4 @@ main{flex:1;min-height:0;margin:0 auto}
 <a class="tool" href="CTLS-WB/index.html"><div class="tool-top"><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 6h14M7 6l-4 8h8L7 6Zm10 0-4 8h8l-4-8Z"/><path d="M4 14c0 2 6 2 6 0M14 14c0 2 6 2 6 0"/></svg></span><span><span class="name">载重平衡</span><span class="tool-en">Weight &amp; Balance</span></span></div><span class="desc">核对重量、重心与各飞行阶段包线</span><b class="index">01</b></a>
 <a class="tool" href="CTLS-FUEL/index.html"><div class="tool-top"><span class="icon"><svg viewBox="0 0 24 24"><path d="M6 21V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v17M5 21h13M8 6h7v5H8zM17 7h2l2 2v7a2 2 0 0 1-4 0v-4"/></svg></span><span><span class="name">燃油计划</span><span class="tool-en">Fuel Planning</span></span></div><span class="desc">计算地面、航程与备用燃油需求</span><b class="index">02</b></a>
 <a class="tool" href="CTLS-TOL/index.html"><div class="tool-top"><span class="icon"><svg viewBox="0 0 24 24"><path d="m2 16 8-4V5.5a2 2 0 0 1 4 0V12l8 4v2l-8-2v3l2 2v1l-4-1-4 1v-1l2-2v-3l-8 2v-2Z"/></svg></span><span><span class="name">起飞与着陆性能</span><span class="tool-en">Takeoff &amp; Landing</span></span></div><span class="desc">比较性能距离、风分量与可用跑道</span><b class="index">03</b></a>
-</div></section></main><footer><span>AEROJONES AVIATION · Flight Operations</span><span class="footer-hide">Aircraft AJ-2111 · Photo WSP_5686</span></footer></div><script src="CTLS-common/js/pwa-register.js"></script></body></html>
+</div></section></main></div><script src="CTLS-common/js/pwa-register.js"></script></body></html>
