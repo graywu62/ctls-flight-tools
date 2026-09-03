@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0d3b66">
+  <title>CTLSi 电子检查单 | Checklist</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../CTLSi-common/css/header.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="page">
+  <header class="app-header">
+    <div class="titles">
+      <h1>CTLSi 电子检查单</h1>
+      <p class="subtitle">AeroJones CTLSi · Interactive Checklist</p>
+    </div>
+  </header>
+
+  <main class="app-shell body-pad">
+    <section class="source-warning verified" role="note">
+      <strong>CTLSi 检查单 + POH Rev.20 CH0</strong>
+      <span>飞行前与正常程序保持原检查单内容；应急程序按POH第3章逐项核对修订。辅助检查单，不替代批准POH。</span>
+    </section>
+
+    <section class="flight-strip" aria-label="检查进度">
+      <div><small>当前进度</small><strong id="progressText">0 / 0</strong></div>
+      <div class="progress"><i id="progressBar"></i></div>
+      <button id="resetBtn" class="reset-btn" type="button">开始新航班</button>
+    </section>
+
+    <nav class="category-tabs" id="categoryTabs" aria-label="检查单类别"></nav>
+    <section class="category-notice" id="categoryNotice"></section>
+    <section class="checklist" id="checklist" aria-live="polite"></section>
+  </main>
+</div>
+
+  <button class="emergency-jump" id="emergencyJump" type="button">应急程序</button>
+
+  <script src="data/checklistData.js"></script>
+  <script src="js/app.js"></script>
+  <script src="../CTLSi-common/js/shell-switch.js"></script>
+  <script src="../CTLSi-common/js/pwa-register.js"></script>
+</body>
+</html>

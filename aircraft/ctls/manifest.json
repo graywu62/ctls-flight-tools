@@ -2,7 +2,7 @@
   "id": "/ctls-flight-tools/",
   "name": "CTLS 飞行工具箱",
   "short_name": "CTLS Tools",
-  "description": "AeroJones CTLS 载重平衡、燃油计划及起飞着陆性能工具",
+  "description": "CTLS载重平衡、燃油计划、起飞着陆性能及电子检查单工具 V3.0",
   "lang": "zh-CN",
   "start_url": "./index.html",
   "scope": "./",

@@ -1,0 +1,340 @@
+/* ================================================================
+   CTLSi Takeoff — 表单布局系统
+   - 与 CTLSi-FUEL 视觉一致：深蓝标题 / 白色卡片 / 圆角阴影 / 中英双语
+   - 4 列统一布局 / 桌面 ≥600px 加大间距
+   - A4 纵向打印一页完成
+   ================================================================ */
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{font-family:'PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(135deg,#e8eef5 0%,#dce6f0 100%);color:#26313d;padding:8px;padding-top:max(8px,env(safe-area-inset-top));padding-bottom:max(8px,env(safe-area-inset-bottom));padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right));min-height:100vh;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:contain;font-size:13px;letter-spacing:.1px}
+
+.container{max-width:420px;margin:0 auto;background:#fff;border:1px solid #cdd9e6;border-radius:14px;box-shadow:0 6px 22px rgba(20,50,90,.12);overflow:hidden}
+
+.body-pad{padding:10px 11px 12px}
+
+/* ---------------- Tabs (Takeoff / Landing) ---------------- */
+.tabs{display:flex;gap:6px;margin-bottom:10px;background:linear-gradient(135deg,#f4f8fc,#eaeff5);border:1px solid #d8e3ef;border-radius:11px;padding:5px;box-shadow:inset 0 1px 2px rgba(20,50,90,.04)}
+.tab{flex:1;padding:8px 6px;text-align:center;font-size:12.5px;font-weight:600;color:#5a6a7c;border-radius:7px;cursor:pointer;line-height:1.15;transition:all .15s;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:center;gap:1px;letter-spacing:.3px}
+.tab .en{display:block;font-size:8.5px;font-weight:400;opacity:.8;letter-spacing:.3px;margin-top:1px}
+.tab.active{background:linear-gradient(135deg,#0d3b66,#1a5a92);color:#fff;box-shadow:0 2px 6px rgba(13,59,102,.3)}
+.tab.active .en{color:#bcd4ea}
+.tab:not(.active):active{background:#dde6ef}
+.tab:focus-visible{outline:3px solid #ffbf47;outline-offset:2px}
+
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* ---------------- Section titles ---------------- */
+.sec-title{--title-accent:#2563a6;--title-deep:#174a7a;--title-bg:#e8f1fb;--title-border:#c7d9ec;font-size:12px;font-weight:600;color:var(--title-deep);margin:12px 0 6px;padding:5px 9px;background:linear-gradient(135deg,#fff,var(--title-bg));border:1px solid var(--title-border);border-radius:7px;display:flex;flex-direction:column;line-height:1.2;letter-spacing:.2px;position:relative;overflow:hidden}
+.sec-title::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--title-accent)}
+.sec-title .en{display:block;font-size:9px;color:var(--title-accent);font-weight:400;margin-top:1px;letter-spacing:.3px}
+.title-conditions{--title-accent:#2563a6;--title-deep:#174a7a;--title-bg:#e8f1fb;--title-border:#c7d9ec}
+.title-config{--title-accent:#0f766e;--title-deep:#115e59;--title-bg:#e7f6f3;--title-border:#bfe2dc}
+.title-results{--title-accent:#7651a8;--title-deep:#5b3b86;--title-bg:#f2edfa;--title-border:#d9cbed}
+.title-runway{--title-accent:#3f7d35;--title-deep:#2f6128;--title-bg:#edf7eb;--title-border:#cce4c7}
+.title-diagram{--title-accent:#ad6800;--title-deep:#874d00;--title-bg:#fff5df;--title-border:#f0d39e}
+
+/* ================================================================
+   Grid rows — 等高等宽
+   ================================================================ */
+.row,.row-2,.result-row{display:grid;gap:8px;margin-bottom:8px;align-items:stretch}
+.row{grid-template-columns:repeat(2,1fr)}
+.row-2{grid-template-columns:repeat(2,1fr)}
+.result-row{grid-template-columns:repeat(2,1fr)}
+.result-2{grid-template-columns:repeat(2,1fr)}
+.row-full{grid-template-columns:1fr!important}
+
+/* 跑道航向 / 坡度 / 表面 三列：表面拉宽 */
+.row.rwy-line{grid-template-columns:1fr 1fr 1.8fr}
+.row.config-row{grid-template-columns:repeat(3,1fr)}
+@media (min-width:600px){
+ .row.rwy-line{gap:10px;margin-bottom:10px}
+}
+/* 着陆结果 4 列同行：VS0 / VREF / GR / LD */
+.result-row.result-4{grid-template-columns:repeat(4,1fr);gap:8px}
+@media (min-width:600px){
+ .result-row.result-4{gap:10px}
+}
+
+/* ================================================================
+   Input field card — 94px 高
+   ================================================================ */
+.fld{display:flex;flex-direction:column;padding:7px 9px;border:1px solid #d8e3ef;border-radius:8px;background:linear-gradient(135deg,#f4f8fc,#eaeff5);box-sizing:border-box;position:relative;height:86px;overflow:hidden}
+.fld::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#0d3b66,#1a5a92);opacity:.55;border-radius:8px 0 0 8px}
+
+.fld label{font-size:11px;color:#0d3b66;font-weight:600;line-height:1.2;letter-spacing:.2px;margin-bottom:3px;min-height:27px;height:auto;display:flex;flex-direction:column;justify-content:flex-start;flex-shrink:0;overflow:visible}
+.fld label .en{display:block;font-size:8.5px;color:#7c8896;font-weight:400;margin-top:1px;letter-spacing:.3px;line-height:1.2}
+
+.fld input,.fld select{height:38px;padding:0 8px;border:1px solid #cfdcec;border-radius:6px;font-size:13px;background:#fff;color:#1f2a37;font-weight:500;box-sizing:border-box;width:100%;appearance:none;-webkit-appearance:none;flex-shrink:0;transition:border-color .15s,box-shadow .15s;line-height:1.2}
+.fld select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%231a5a92' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px}
+.fld input:focus,.fld select:focus{border-color:#1a5a92;outline:none;box-shadow:0 0 0 3px rgba(26,90,146,.18)}
+
+.fld input[type=number]::-webkit-outer-spin-button,.fld input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.fld input[type=number]{-moz-appearance:textfield}
+
+/* Readonly */
+.fld input.ro{background:#eef3f8;color:#0d3b66;border-color:#dde6ef;font-family:'SF Mono','Monaco','Consolas',monospace;font-weight:600;letter-spacing:-.2px;cursor:default}
+.fld input.ro:focus{box-shadow:none;border-color:#dde6ef}
+
+/* ================================================================
+   Result card — hero 大数字卡（用于计算结果）
+   ================================================================ */
+.result-card{display:flex;flex-direction:column;padding:10px 12px;border:1.5px solid #1a5a92;border-radius:9px;background:linear-gradient(160deg,#fff,#e8f1fb);box-sizing:border-box;position:relative;overflow:hidden;height:96px;box-shadow:0 2px 6px rgba(13,59,102,.10)}
+.result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0d3b66,#1a5a92,#0d3b66)}
+.result-card .lbl{font-size:11px;color:#5a6a7c;font-weight:600;line-height:1.25;letter-spacing:.2px;min-height:30px;height:auto;display:flex;flex-direction:column;justify-content:flex-start;flex-shrink:0;overflow:visible}
+.result-card .lbl .en{display:block;font-size:8.5px;color:#98a4b0;font-weight:400;margin-top:1px;letter-spacing:.3px;line-height:1.2}
+.result-card .val{font-size:24px;font-weight:bold;color:#0d3b66;margin-top:auto;font-family:'SF Mono','Monaco','Consolas',monospace;letter-spacing:-.5px;line-height:1.1;flex-shrink:0}
+.result-card .val.warn{color:#cf1322}
+.result-card .val.ok{color:#237804}
+.result-card .val.danger{color:#cf1322}
+
+/* ================================================================
+   Result layout — 桌面 4 列、移动 2 列
+   ================================================================ */
+.result-row.result-2{gap:8px}
+
+@media (min-width:600px){
+ .result-row.result-2{grid-template-columns:repeat(2,1fr);gap:10px}
+}
+
+/* ================================================================
+   Warnings
+   ================================================================ */
+.warnings{margin-top:6px}
+.warning{padding:6px 10px;border-radius:6px;font-size:11px;margin-bottom:4px;line-height:1.4}
+.warning .en{color:inherit;opacity:.7;font-size:10px;display:block;margin-top:1px}
+.warning.danger{background:#fff2f0;border:1px solid #ffccc7;color:#cf1322}
+.warning.caution{background:#fffbe6;border:1px solid #ffe58f;color:#ad6800}
+.warning.success{background:#f6ffed;border:1px solid #b7eb8f;color:#237804}
+
+/* ================================================================
+   Runway Analysis — 极简紧凑卡片
+   ================================================================ */
+.analysis-card{margin-top:8px;padding:8px 11px 7px;background:linear-gradient(160deg,#fff,#e8f1fb);border:1.5px solid #1a5a92;border-radius:8px;box-sizing:border-box;position:relative;overflow:hidden;box-shadow:0 2px 6px rgba(13,59,102,.10)}
+.analysis-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0d3b66,#1a5a92,#0d3b66)}
+.analysis-title{font-size:11px;color:#0d3b66;font-weight:600;margin-bottom:5px;display:flex;flex-direction:column;gap:1px;line-height:1.2;letter-spacing:.2px}
+.analysis-title .en{font-size:8.5px;color:#7c8896;font-weight:400;letter-spacing:.3px}
+
+.analysis-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:11px;border-bottom:1px dashed #e7eef5;line-height:1.3}
+.analysis-row:last-of-type{border-bottom:none}
+.analysis-row .ar-lbl{color:#5a6a7c;font-weight:500;letter-spacing:.2px;display:flex;flex-direction:column;gap:1px;line-height:1.2}
+.analysis-row .ar-lbl .en{font-size:9px;color:#98a4b0;font-weight:400;letter-spacing:.2px}
+.analysis-row .ar-val{font-family:'SF Mono','Monaco','Consolas',monospace;font-weight:bold;color:#0d3b66;font-size:14px;letter-spacing:-.2px;flex-shrink:0}
+.analysis-row .ar-val.ok{color:#237804}
+.analysis-row .ar-val.danger{color:#cf1322}
+
+/* ================================================================
+   Diagram — 跑道俯视图
+   ================================================================ */
+.diagram-wrap{margin-top:8px;padding:10px 10px 6px;background:linear-gradient(135deg,#f4f8fc,#eaeff5);border:1px solid #d8e3ef;border-radius:9px;box-sizing:border-box;overflow:hidden}
+#takeoff-diagram{display:block;width:100%;height:auto;margin:0 auto}
+
+/* 图例 */
+.diagram-legend{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:center;margin-top:6px;padding:6px 8px;background:linear-gradient(135deg,#f4f8fc,#eaeff5);border:1px solid #d8e3ef;border-radius:7px}
+.legend-item{font-size:10.5px;color:#26313d;display:flex;align-items:center;gap:4px;line-height:1.2;letter-spacing:.2px}
+.lg-swatch{display:inline-block;width:11px;height:11px;border-radius:2px;border:1px solid rgba(0,0,0,.08);flex-shrink:0}
+
+/* ================================================================
+   Actions
+   ================================================================ */
+.actions{text-align:center;margin-top:12px;display:flex;gap:8px;justify-content:center}
+.actions button{padding:8px 20px;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;line-height:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:42px;min-width:120px;transition:transform .1s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.actions button .en{display:block;font-size:9px;opacity:.85;font-weight:400;letter-spacing:.4px}
+.actions button:active{transform:scale(.97)}
+.btn-r{background:linear-gradient(135deg,#237804,#389e0d);color:#fff;box-shadow:0 3px 10px rgba(35,120,4,.28)}
+.btn-r:active{background:linear-gradient(135deg,#1c6303,#237804)}
+
+/* ---------------- Foot note ---------------- */
+.foot-note{margin-top:12px;padding:7px 10px;background:#f4f8fc;border:1px solid #d8e3ef;border-radius:7px;font-size:10px;color:#5a6a7c;line-height:1.5}
+.foot-note strong{color:#0d3b66}
+.foot-note .en{color:#98a4b0;font-size:9px}
+
+/* ================================================================
+   平板 768px-1024px：优化布局
+   ================================================================ */
+@media (min-width:600px) and (max-width:1024px){
+ body{padding:12px;font-size:14px}
+ .container{max-width:680px;border-radius:14px}
+ .body-pad{padding:12px 16px 16px}
+ .row{grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+ .row-2{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px}
+ .row.rwy-line{grid-template-columns:1fr 1fr 1.5fr}
+ .fld{height:86px;padding:7px 9px}
+ .fld label{font-size:11px;min-height:27px;height:auto}
+ .fld label .en{font-size:9px}
+ .fld input,.fld select{height:38px;padding:0 8px;font-size:12px;border-radius:5px}
+ .result-card{height:96px;padding:10px 12px}
+ .result-card .lbl{font-size:11px;min-height:30px;height:auto}
+ .result-card .val{font-size:24px}
+ .sec-title{font-size:12px;padding:5px 10px}
+ .sec-title .en{font-size:9px}
+ .result-row.result-4{grid-template-columns:repeat(2,1fr);gap:10px}
+ .analysis-row{font-size:11px}
+ .analysis-row .ar-val{font-size:14px}
+ .diagram-legend{font-size:10px;gap:12px 16px;padding:6px 10px}
+}
+
+/* ================================================================
+   桌面 ≥1024px：4 列布局、加大字号
+   ================================================================ */
+@media (min-width:1024px){
+ body{padding:14px;font-size:14px}
+ .container{max-width:770px;border-radius:12px}
+ .body-pad{padding:14px 18px 18px}
+ .row{grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+ .row-2{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px}
+ .fld{height:88px;padding:7px 10px}
+ .fld label{font-size:12px;min-height:29px;height:auto}
+ .fld label .en{font-size:9.5px}
+ .fld input,.fld select{height:38px;padding:0 10px;font-size:13px;border-radius:5px}
+ .fld select{background-image:none;padding-right:10px}
+ .result-card{height:100px;padding:10px 14px}
+ .result-card .lbl{font-size:12px;min-height:32px;height:auto}
+ .result-card .lbl .en{font-size:9.5px}
+ .result-card .val{font-size:26px}
+ .sec-title{font-size:13px;padding:6px 12px}
+ .sec-title .en{font-size:10px}
+ .analysis-row{font-size:11.5px}
+ .analysis-row .ar-val{font-size:15px}
+ .actions button{flex-direction:row;padding:6px 16px;font-size:12px;min-height:auto;min-width:auto;border-radius:6px}
+ .actions button .en{font-size:9px}
+ .diagram-legend{font-size:11px;gap:14px 18px;padding:8px 12px}
+}
+
+/* ================================================================
+   移动端优化：标签文字溢出处理
+   ================================================================ */
+@media (max-width:600px){
+  .row.rwy-line{grid-template-columns:repeat(2,1fr)}
+  .row.rwy-line .fld:nth-child(3){grid-column:1/-1}
+  .row.config-row{grid-template-columns:repeat(2,1fr)}
+  .row.config-row .fld:first-child{grid-column:1/-1}
+  .fld{height:auto;min-height:80px;padding:7px 9px}
+  .fld label{font-size:11px;height:auto;min-height:29px;max-height:none;overflow:visible;line-height:1.15}
+  .fld label .en{font-size:9px;color:#98a4b0;white-space:normal;overflow:visible;text-overflow:clip}
+  .fld input,.fld select{height:38px;padding:0 8px;font-size:12px}
+  .result-card{height:auto;min-height:88px;padding:8px 10px}
+  .result-card .lbl{font-size:10.5px;height:auto;min-height:32px;max-height:none;overflow:visible}
+  .result-card .lbl .en{font-size:8.5px}
+  .result-card .val{font-size:22px}
+  .result-row.result-4{grid-template-columns:repeat(2,1fr);gap:8px}
+  .result-row.result-4 .result-card{padding:8px 8px}
+  .result-row.result-4 .result-card .lbl{font-size:9.5px}
+  .result-row.result-4 .result-card .val{font-size:20px}
+  .diagram-title{margin-top:8px}
+  .diagram-wrap{padding:7px 7px 4px}
+  #takeoff-diagram,#ld-diagram{height:110px}
+  .diagram-legend{gap:6px 10px;padding:6px 8px}
+  .legend-item{font-size:9.5px}
+}
+
+/* ================================================================
+   极窄屏 <360px：保护布局
+   ================================================================ */
+@media (max-width:359px){
+ body{padding:4px}
+ .body-pad{padding:6px 6px 8px}
+ .row,.row-2,.result-row{grid-template-columns:repeat(2,1fr);gap:5px}
+ .row.rwy-line{grid-template-columns:repeat(2,1fr)}
+ .fld{min-height:80px;padding:6px 6px}
+ .fld label{font-size:10px;max-height:none}
+ .fld label .en{font-size:8px}
+ .fld input,.fld select{height:36px;padding:0 6px;font-size:11px}
+ .result-card{min-height:80px;padding:6px 6px}
+ .result-card .lbl{font-size:9.5px;max-height:none}
+ .result-card .val{font-size:18px}
+ .result-row.result-4 .result-card{padding:5px 5px;min-height:76px}
+ .result-row.result-4 .result-card .lbl{font-size:9px}
+ .result-row.result-4 .result-card .val{font-size:17px}
+}
+
+/* ================================================================
+   Advanced (collapsible) — 仅用于着陆页 Touchdown Offset
+   ================================================================ */
+details.advanced{margin-top:8px;margin-bottom:8px;border:1px solid #d8e3ef;border-radius:8px;background:linear-gradient(135deg,#f4f8fc,#eaeff5);overflow:hidden;box-sizing:border-box}
+details.advanced>summary{padding:7px 10px;cursor:pointer;font-size:12px;font-weight:600;color:#0d3b66;display:flex;align-items:center;gap:8px;list-style:none;user-select:none;line-height:1.2;letter-spacing:.2px;-webkit-tap-highlight-color:transparent}
+details.advanced>summary::-webkit-details-marker{display:none}
+details.advanced>summary::before{content:'▶';font-size:8px;color:#0d3b66;transition:transform .15s;flex-shrink:0}
+details.advanced[open]>summary::before{transform:rotate(90deg)}
+details.advanced>summary:active{background:rgba(13,59,102,.05)}
+details.advanced .adv-title{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0}
+details.advanced .adv-title .en{font-size:9px;color:#7c8896;font-weight:400;letter-spacing:.3px}
+
+.support-detail{margin-top:10px;border:1px solid #d8e3ef;border-radius:8px;background:#fff;overflow:hidden}
+.support-detail>summary{padding:8px 10px;cursor:pointer;list-style:none;background:linear-gradient(135deg,#fff,#eef1f4);font-size:12px;font-weight:700;color:#46576a;display:flex;align-items:center;gap:6px;border-left:3px solid #778899}
+.support-detail>summary::-webkit-details-marker{display:none}
+.support-detail>summary::before{content:'▶';font-size:8px;transition:transform .15s}
+.support-detail[open]>summary::before{transform:rotate(90deg)}
+.support-detail>summary span{font-size:9px;font-weight:400;color:#7c8896}
+.support-detail .diagram-wrap{margin:8px 8px 0}
+.support-detail .diagram-legend{margin:6px 8px 8px}
+.source-detail .foot-note{margin:0;border:0;border-radius:0}
+details.advanced>*:not(summary){padding:8px 10px 10px;background:#fff;border-top:1px solid #e7eef5}
+details.advanced .row,details.advanced .row-2,details.advanced .row-full{margin-bottom:0}
+
+/* ================================================================
+   Landing 安全状态卡
+   ================================================================ */
+.ld-status{margin-top:6px;padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600;display:flex;align-items:flex-start;gap:8px;line-height:1.35;box-sizing:border-box;letter-spacing:.2px;min-height:42px}
+.ld-status .en{font-size:10px;opacity:.85;font-weight:400;display:block;margin-top:2px;letter-spacing:.3px}
+.ld-status .icon{font-size:14px;line-height:1;flex-shrink:0;padding-top:1px}
+.ld-status .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.ld-status.ok{background:linear-gradient(135deg,#f6ffed,#d9f7be);border:1.5px solid #52c41a;color:#237804}
+.ld-status.caution{background:linear-gradient(135deg,#fffbe6,#ffe58f);border:1.5px solid #faad14;color:#ad6800}
+.ld-status.danger{background:linear-gradient(135deg,#fff2f0,#ffa39e);border:1.5px solid #cf1322;color:#cf1322;animation:pulseDanger 1.6s ease-in-out infinite}
+.ld-status.neutral{background:linear-gradient(135deg,#f4f8fc,#eaeff5);border:1px solid #d8e3ef;color:#5a6a7c;font-weight:500}
+
+@keyframes pulseDanger{
+ 0%,100%{box-shadow:0 0 0 0 rgba(207,19,34,0)}
+ 50%{box-shadow:0 0 0 7px rgba(207,19,34,.18)}
+}
+
+/* ================================================================
+   打印 — A4 纵向：起飞 / 着陆 各自一页
+   ================================================================ */
+@media print{
+ @page{size:A4 portrait;margin:9mm}
+ body{padding:0;background:#fff;font-size:10.5px}
+ .container{box-shadow:none;border:none;max-width:100%;border-radius:0}
+ .body-pad{padding:6px 8px 4px}
+ .actions,.diagram-legend,.tabs,.support-detail{display:none!important}
+ .tab-pane{display:block!important}
+
+ /* 分页：起飞完结后强制换页，着陆在新一页开头 */
+ #tab-to{page-break-after:always;break-after:page;page-break-inside:auto}
+ #tab-ld{page-break-before:always;break-before:page;page-break-inside:auto}
+
+ /* 通用压缩 */
+ .fld,.result-card{height:auto;min-height:0;padding:4px 6px;page-break-inside:avoid}
+ .fld label,.result-card .lbl{margin-bottom:2px;height:auto;font-size:10px}
+ .fld label .en{font-size:8px}
+ .fld input,.fld select{height:22px;font-size:10px;padding:0 5px;border-radius:4px}
+ .result-card .val{font-size:17px}
+ .result-card .lbl .en{font-size:8.5px}
+ .row,.row-2,.row-full,.result-row{margin-bottom:3px;gap:4px}
+ .sec-title{margin:4px 0 3px;padding:3px 7px;font-size:10.5px;page-break-after:avoid}
+ .diagram-wrap{padding:5px;border:none;background:#fff;page-break-inside:avoid;break-inside:avoid}
+ #takeoff-diagram,#ld-diagram{max-height:115px}
+ .analysis-card{padding:5px 8px;page-break-inside:avoid;break-inside:avoid}
+ .analysis-row{padding:2px 0;font-size:10px}
+ .analysis-row .ar-lbl .en{font-size:8px}
+ .analysis-row .ar-val{font-size:12px}
+ .warnings{margin-top:3px}
+ .warning{padding:3px 7px;font-size:9.5px;margin-bottom:2px;line-height:1.35}
+
+ /* 打印：details.advanced 始终展开 + 压缩 ld-status */
+ details.advanced{margin:3px 0;page-break-inside:avoid;break-inside:avoid}
+ details.advanced>summary{padding:3px 8px;font-size:10px;background:#f4f8fc}
+ details.advanced>summary::before{font-size:7px}
+ details.advanced>summary .adv-title .en{font-size:8px}
+ details.advanced>*:not(summary){padding:4px 8px;border-top:none;background:#fff}
+ .ld-status{padding:4px 10px;font-size:10.5px;min-height:0;margin-top:3px;page-break-inside:avoid;break-inside:avoid;animation:none}
+ .ld-status .en{font-size:8.5px}
+
+ /* 打印：result-2 / result-4 收紧为 4 列，便于着陆页 4 张结果卡在 A4 一页内呈现 */
+ .result-row.result-2,.result-row.result-4{grid-template-columns:repeat(4,1fr);gap:5px}
+
+ /* 脚注只放在最后一页（着陆 Tab 末尾） */
+ .foot-note{margin-top:6px;padding:4px 8px;font-size:9px;line-height:1.4;page-break-inside:avoid}
+}

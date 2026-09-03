@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ctls-flight-tools-v1.3.0';
+const CACHE_NAME = 'ctls-flight-tools-v3.0.4';
 const CORE_ASSETS = [
   './', './index.html', './manifest.json', './assets/WSP_5686-web.webp',
   './CTLS-common/css/header.css', './CTLS-common/js/flight-plan-store.js',
@@ -11,7 +11,9 @@ const CORE_ASSETS = [
   './CTLS-FUEL/icons/icon-192.png', './CTLS-FUEL/icons/icon-512.png',
   './CTLS-TOL/index.html', './CTLS-TOL/css/style.css', './CTLS-TOL/js/script.js',
   './CTLS-TOL/manifest.json', './CTLS-TOL/icons/icon.svg',
-  './CTLS-TOL/icons/icon-192.png', './CTLS-TOL/icons/icon-512.png'
+  './CTLS-TOL/icons/icon-192.png', './CTLS-TOL/icons/icon-512.png',
+  './CTLS-CHECK/index.html', './CTLS-CHECK/css/style.css', './CTLS-CHECK/js/app.js',
+  './CTLS-CHECK/data/checklistData.js', './CTLS-CHECK/manifest.json', './CTLS-CHECK/icons/icon.svg'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));

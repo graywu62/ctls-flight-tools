@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d3b66">
+<meta name="apple-mobile-web-app-capable"="yes">
+<meta name="mobile-web-app-capable"="yes">
+<meta name="apple-mobile-web-app-status-bar-style"="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CTLSi T&L">
+<meta name="format-detection" content="telephone=no">
+<title>CTLSi 起飞着陆性能 | Takeoff &amp; Landing Performance</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192.png">
+<link rel="stylesheet" href="../CTLSi-common/css/header.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+
+  <header class="app-header">
+    <div class="titles">
+      <h1>CTLSi 起飞/着陆性能</h1>
+      <p class="subtitle">AeroJones CTLSi · Takeoff &amp; Landing Performance</p>
+    </div>
+  </header>
+
+  <div class="body-pad">
+
+    <!-- ============================================================
+         性能分页 Tabs
+         ============================================================ -->
+    <div class="tabs" role="tablist" aria-label="性能计算类型">
+      <div class="tab active" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-to" onclick="switchTab('to')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('to')}">起飞性能<span class="en">Takeoff</span></div>
+      <div class="tab" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-ld" onclick="switchTab('ld')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('ld')}">着陆性能<span class="en">Landing</span></div>
+    </div>
+
+    <!-- ============================================================
+         起飞性能 Takeoff TAB
+         ============================================================ -->
+    <div class="tab-pane active" id="tab-to">
+
+      <div class="sec-title title-conditions">飞行与环境条件<span class="en">Flight Conditions</span></div>
+
+      <div class="row">
+        <div class="fld">
+          <label>机场标高 Elevation<span class="en">m AMSL</span></label>
+          <input type="number" id="to_elev_m" step="10" value="0" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>气压值 BARO<span class="en">hPa (1013.25 标准)</span></label>
+          <input type="number" id="to_qnh" step="0.5" min="900" max="1080" value="1013.25" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>外界温度 OAT<span class="en">°C</span></label>
+          <input type="number" id="to_oat_c" step="1" value="15" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>起飞重量 Takeoff Weight<span class="en">kg (≤ 600 MTOW)</span></label>
+          <input type="number" id="to_tow" step="1" min="400" max="600" value="600" oninput="calcAll()">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="fld">
+          <label>压力高度 PA<span class="en">m (auto)</span></label>
+          <input type="number" id="to_pa_m" class="ro" step="10" readonly>
+        </div>
+        <div class="fld">
+          <label>密度高度 DA<span class="en">m (auto)</span></label>
+          <input type="number" id="to_da_m" class="ro" step="10" readonly>
+        </div>
+        <div class="fld">
+          <label>风向 Wind Direction<span class="en">° (from north)</span></label>
+          <input type="number" id="to_wind_dir" step="1" min="0" max="360" value="0" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>风速 Wind Speed<span class="en">m/s</span></label>
+          <input type="number" id="to_wind_ms" step="0.5" min="0" max="20" value="0" oninput="calcAll()">
+        </div>
+      </div>
+
+      <div class="sec-title title-config">跑道与飞机构型<span class="en">Runway &amp; Configuration</span></div>
+      <div class="row rwy-line">
+        <div class="fld">
+          <label>跑道航向 Runway Heading<span class="en">° (磁向 magnetic)</span></label>
+          <input type="number" id="to_rwy_hdg" step="1" min="0" max="360" value="0" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>跑道坡度 Runway Slope<span class="en">% (上坡为正)</span></label>
+          <input type="number" id="to_slope" step="0.5" min="-4" max="4" value="0" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>跑道表面 Runway Surface<span class="en">Surface</span></label>
+          <select id="to_surface" onchange="calcAll()">
+            <option value="paved_dry">硬化跑道·干燥 Paved Dry</option>
+            <option value="grass_short">短草地 Short Grass</option>
+            <option value="grass_long">长草地 8寸(20cm) Long Grass</option>
+            <option value="wet_grass">薄层湿雪 Thin Wet Snow</option>
+            <option value="wet_soil">湿土 1.2寸(3cm) Wet Soil</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row config-row">
+        <div class="fld">
+          <label>起飞襟翼 Takeoff Flaps<span class="en">° (短跑道用15°)</span></label>
+          <select id="to_flap" onchange="calcAll()">
+            <option value="0">0° (正常 Normal)</option>
+            <option value="15">15° (短跑道 Short Field)</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>侧风分量 Crosswind<span class="en">m/s (auto)</span></label>
+          <input type="number" id="to_crosswind_out" class="ro" step="0.1" readonly>
+        </div>
+        <div class="fld">
+          <label>可用起飞跑道 TORA<span class="en">m (Takeoff Runway Available)</span></label>
+          <input type="number" id="to_runway_avail" step="50" min="0" value="800" oninput="calcAll()">
+        </div>
+      </div>
+
+      <!-- ② 计算结果 -->
+      <div class="sec-title title-results">计算结果 Calculated Results<span class="en">All Distances Corrected</span></div>
+
+      <div class="result-row result-2">
+        <div class="result-card result-large">
+          <div class="lbl">地面滑跑 Ground Roll<span class="en">m (Corrected, to lift-off)</span></div>
+          <div class="val" id="to_roll">--</div>
+        </div>
+        <div class="result-card result-large">
+          <div class="lbl">全起飞距离 Takeoff Distance<span class="en">m (Corrected, to 15 m obstacle)</span></div>
+          <div class="val" id="to_dist">--</div>
+        </div>
+      </div>
+
+      <div class="warnings" id="warnings_to"></div>
+
+      <!-- ③ 跑道分析 -->
+      <div class="sec-title title-runway">跑道分析 Runway Analysis<span class="en">vs Available Takeoff Runway</span></div>
+
+      <div class="analysis-card">
+        <div class="analysis-title">跑道占用 Runway Usage<span class="en">% of TORA</span></div>
+        <div class="analysis-row">
+          <span class="ar-lbl">地面滑跑占比 Ground Roll Usage<span class="en">% of runway</span></span>
+          <span class="ar-val" id="a_to_roll_pct">--%</span>
+        </div>
+        <div class="analysis-row">
+          <span class="ar-lbl">起飞距离占比 Takeoff Distance Usage<span class="en">% of runway</span></span>
+          <span class="ar-val" id="a_to_dist_pct">--%</span>
+        </div>
+        <div class="analysis-row">
+          <span class="ar-lbl">剩余跑道 Remaining Runway<span class="en">m (TORA − Takeoff Distance)</span></span>
+          <span class="ar-val" id="a_to_remaining">--</span>
+        </div>
+      </div>
+
+      <div id="to_status" class="ld-status"></div>
+
+      <!-- ④ 跑道示意图 -->
+      <div class="sec-title diagram-title title-diagram">跑道示意图 Runway Diagram<span class="en">Top-down · 100% = TORA</span></div>
+      <div class="diagram-wrap">
+        <svg id="takeoff-diagram" viewBox="0 0 800 180" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="diagram-legend">
+        <div class="legend-item"><span class="lg-swatch" style="background:#1a5a92"></span>地面滑跑 Ground Roll</div>
+        <div class="legend-item"><span class="lg-swatch" style="background:#237804"></span>离地后 Airborne</div>
+        <div class="legend-item"><span class="lg-swatch" style="background:#722ed1"></span>起飞距离 Takeoff Distance</div>
+        <div class="legend-item"><span class="lg-swatch" style="background:#bfbfbf"></span>剩余跑道 Remaining</div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         着陆性能 Landing TAB
+         ============================================================ -->
+    <div class="tab-pane" id="tab-ld">
+
+      <div class="sec-title title-conditions">飞行与环境条件<span class="en">Flight Conditions</span></div>
+
+      <div class="row">
+        <div class="fld">
+          <label>机场标高 Elevation<span class="en">m AMSL</span></label>
+          <input type="number" id="ld_elev_m" step="10" value="0" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>气压值 BARO<span class="en">hPa (1013.25 标准)</span></label>
+          <input type="number" id="ld_qnh" step="0.5" min="900" max="1080" value="1013.25" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>外界温度 OAT<span class="en">°C</span></label>
+          <input type="number" id="ld_oat_c" step="1" value="15" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>着陆重量 Landing Weight<span class="en">kg (≤ 600 MLW)</span></label>
+          <input type="number" id="ld_ldw" step="1" min="400" max="600" value="560" oninput="calcAll()">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="fld">
+          <label>压力高度 PA<span class="en">m (auto)</span></label>
+          <input type="number" id="ld_pa_m" class="ro" step="10" readonly>
+        </div>
+        <div class="fld">
+          <label>密度高度 DA<span class="en">m (auto)</span></label>
+          <input type="number" id="ld_da_m" class="ro" step="10" readonly>
+        </div>
+        <div class="fld">
+          <label>风向 Wind Direction<span class="en">° (from north)</span></label>
+          <input type="number" id="ld_wind_dir" step="1" min="0" max="360" value="0" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>风速 Wind Speed<span class="en">m/s</span></label>
+          <input type="number" id="ld_wind_ms" step="0.5" min="0" max="20" value="0" oninput="calcAll()">
+        </div>
+      </div>
+
+      <div class="sec-title title-config">跑道与飞机构型<span class="en">Runway &amp; Configuration</span></div>
+      <div class="row rwy-line">
+        <div class="fld">
+          <label>跑道航向 Runway Heading<span class="en">° (磁向 magnetic)</span></label>
+          <input type="number" id="ld_rwy_hdg" step="1" min="0" max="360" value="0" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>跑道坡度 Runway Slope<span class="en">% (上坡为正)</span></label>
+          <input type="number" id="ld_slope" step="0.5" min="-4" max="4" value="0" oninput="calcAll()">
+        </div>
+        <div class="fld">
+          <label>跑道表面 Runway Surface<span class="en">Surface</span></label>
+          <select id="ld_surface" onchange="calcAll()">
+            <option value="paved_dry">硬化跑道·干燥 Paved Dry</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row config-row">
+        <div class="fld">
+          <label>着陆襟翼 Landing Flaps<span class="en">° (15° 正常 / 30°–35° 短跑道)</span></label>
+          <select id="ld_flap" onchange="calcAll()">
+            <option value="0">0° (应急；无距离图表 Emergency)</option>
+            <option value="15">15° (正常 Normal)</option>
+            <option value="30" selected>30° (短跑道 Short Field)</option>
+            <option value="35">35° (短跑道，采用30°图表)</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>侧风分量 Crosswind<span class="en">m/s (auto)</span></label>
+          <input type="number" id="ld_crosswind_out" class="ro" step="0.1" readonly>
+        </div>
+        <div class="fld">
+          <label>可用着陆跑道长度 LDA<span class="en">m (Landing Distance Available)</span></label>
+          <input type="number" id="ld_runway_avail" step="50" min="0" value="800" oninput="calcAll()">
+        </div>
+      </div>
+
+      <details class="advanced">
+        <summary>
+          <div class="adv-title">高级选项 Advanced<span class="en">Touchdown Offset &amp; Adjustments</span></div>
+        </summary>
+        <div class="row row-2">
+          <div class="fld">
+            <label>接地偏移 Touchdown Offset<span class="en">m (从 Threshold 起, 默认 0)</span></label>
+            <input type="number" id="ld_td_offset" step="10" min="0" value="0" oninput="calcAll()">
+          </div>
+        </div>
+      </details>
+
+      <!-- ② 计算结果 -->
+      <div class="sec-title title-results">计算结果 Calculated Results<span class="en">Speeds &amp; All Distances Corrected</span></div>
+
+      <div class="result-row result-4">
+        <div class="result-card result-large">
+          <div class="lbl">失速速度 VS0<span class="en">kt (Stall Speed)</span></div>
+          <div class="val" id="ld_vs0">--</div>
+        </div>
+        <div class="result-card result-large">
+          <div class="lbl">着陆入口速度 VREF<span class="en">kt (1.3 × VS0)</span></div>
+          <div class="val" id="ld_vref">--</div>
+        </div>
+        <div class="result-card result-large">
+          <div class="lbl">地面滑跑 Ground Roll<span class="en">m (Corrected)</span></div>
+          <div class="val" id="ld_roll">--</div>
+        </div>
+        <div class="result-card result-large">
+          <div class="lbl">着陆距离 Landing Distance<span class="en">m (Corrected)</span></div>
+          <div class="val" id="ld_dist">--</div>
+        </div>
+      </div>
+
+      <div class="warnings" id="warnings_ld"></div>
+
+      <!-- ③ 跑道分析 -->
+      <div class="sec-title title-runway">跑道分析 Runway Analysis<span class="en">vs Available Landing Runway (LDA)</span></div>
+
+      <div class="analysis-card">
+        <div class="analysis-title">跑道占用 Runway Usage<span class="en">% of LDA &amp; Stop Margin</span></div>
+        <div class="analysis-row">
+          <span class="ar-lbl">地面滑跑占比 Ground Roll Usage<span class="en">% of LDA</span></span>
+          <span class="ar-val" id="a_ld_roll_pct">--%</span>
+        </div>
+        <div class="analysis-row">
+          <span class="ar-lbl">着陆距离占比 Landing Distance Usage<span class="en">% of LDA</span></span>
+          <span class="ar-val" id="a_ld_dist_pct">--%</span>
+        </div>
+        <div class="analysis-row">
+          <span class="ar-lbl">剩余跑道 Remaining Runway<span class="en">m (LDA − Stop Point)</span></span>
+          <span class="ar-val" id="a_ld_remaining">--</span>
+        </div>
+      </div>
+
+      <div id="ld_status" class="ld-status"></div>
+
+      <!-- ④ 跑道示意图 -->
+      <div class="sec-title diagram-title title-diagram">跑道示意图 Runway Diagram<span class="en">Top-down · 100% = LDA</span></div>
+      <div class="diagram-wrap">
+        <svg id="ld-diagram" viewBox="0 0 800 180" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="diagram-legend">
+        <div class="legend-item"><span class="lg-swatch" style="background:#237804"></span>地面滑跑 Ground Roll</div>
+        <div class="legend-item"><span class="lg-swatch" style="background:#722ed1"></span>停止点 Stop Point</div>
+        <div class="legend-item"><span class="lg-swatch" style="background:#bfbfbf"></span>剩余跑道 Remaining</div>
+      </div>
+    </div>
+
+    <details class="support-detail source-detail">
+      <summary>POH 数据来源与计算依据 <span>Data Source &amp; Method</span></summary>
+      <div class="foot-note">
+      <strong>数据来源 POH Section 5 (2022版)：</strong>
+      性能数据基于状况良好的飞机（MTOW 600 kg / MLW 600 kg, ISA 0, 无风, 水平硬地），采用 Neuform CR3-65-(IP)-47-101.6 可调桨。
+      距离图表使用密度高度（Density Altitude），非压力高度——若用海拔高度会导致误差（夏季高温时尤甚）。
+      <strong>密度高度算法：</strong>PA(m) = 机场标高 + (1013.25 − QNH) × 9.144；DA(m) = PA(m) + (OAT − ISA) × 36.576，其中 ISA = 15 − 0.0065 × PA(m)。
+      风分量计算：风向/跑道航向均以正北为基准（°），相对夹角 = 风向 − 跑道航向；正北风相对跑道航向 = 顶风分量。
+      修正系数：硬化湿润 ×1.10 / ×1.07；长草地 8 寸 ×1.20 / ×1.17；2% 坡度 ×1.07 / ×1.06；4% 坡度 ×1.14 / ×1.12；2.5 m/s 顺风 ×1.20 / ×1.25。
+      最佳起飞襟翼 15° 用于短跑道（§4.2.8）；着陆襟翼 15° 正常 / 30°–35° 短跑道。手册仅发布15°和30°距离图表；35°短场着陆采用30°图表，0°仅用于襟翼控制失效程序且不提供距离数据。<strong>实际运行请以纸质POH为准。</strong>
+      </div>
+    </details>
+  </div>
+</div>
+
+<script src="../CTLSi-common/js/flight-plan-store.js"></script>
+<script src="../CTLSi-common/js/tool-draft-store.js"></script>
+<script src="../CTLSi-common/js/form-accessibility.js"></script>
+<script src="js/script.js?v=1.3.0"></script>
+<script src="../CTLSi-common/js/shell-switch.js"></script>
+<script src="../CTLSi-common/js/pwa-register.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{
+  "id": "/ctlsi-tol-calculator",
+  "name": "CTLSi 起飞着陆性能计算器",
+  "short_name": "CTLSi T&L",
+  "description": "AeroJones CTLSi 飞机起飞着陆性能计算器 / Takeoff & Landing Performance (POH 2022)",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "theme_color": "#0d3b66",
+  "background_color": "#e8eef5",
+  "categories": ["utilities", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "起飞性能",
+      "short_name": "Takeoff",
+      "description": "直接进入起飞性能计算",
+      "url": "./index.html?to",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "着陆性能",
+      "short_name": "Landing",
+      "description": "直接进入着陆性能计算",
+      "url": "./index.html?ld",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

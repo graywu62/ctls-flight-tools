@@ -2,8 +2,8 @@
   'use strict';
 
   /* ============================================================
-     CTLS Shell Switcher
-     - 仅在三个工具页 index.html 的 </body> 前通过 <script> 引入
+     CTLSi Shell Switcher
+     - 在四个工具页 index.html 的 </body> 前通过 <script> 引入
      - 运行时向各工具自己的 .app-header 右侧注入：
          【工具下拉框】 【打印按钮】
      - 属于 Header 内部的普通 flex 子元素（非 position:fixed，不悬浮）
@@ -13,9 +13,12 @@
      ============================================================ */
 
   var TARGETS = {
-    wb:   '../CTLS-WB/index.html',
-    fuel: '../CTLS-FUEL/index.html',
-    tol:  '../CTLS-TOL/index.html'
+    wb:   '../CTLSi-WB/index.html',
+    fuel: '../CTLSi-FUEL/index.html',
+    tol:  '../CTLSi-TOL/index.html',
+    check:'../CTLSi-CHECK/index.html',
+    home: '../index.html',
+    aircraft: '../../../index.html'
   };
 
   /* ----- 1) 注入下拉框 + 打印按钮样式（三个工具完全一致）----- */
@@ -79,7 +82,10 @@
   [
     { v: 'wb',   t: '载重平衡' },
     { v: 'fuel', t: '燃油计算' },
-    { v: 'tol',  t: '起飞性能' }
+    { v: 'tol',  t: '起飞性能' },
+    { v: 'check',t: '检查单' },
+    { v: 'home', t: '返回首页' },
+    { v: 'aircraft', t: '切换机型' }
   ].forEach(function(o){
     var op = document.createElement('option');
     op.value = o.v;
@@ -89,14 +95,15 @@
 
   /* 根据当前 URL 自动选中 */
   var p = location.pathname;
-  if (p.indexOf('CTLS-WB')   >= 0) sel.value = 'wb';
-  else if (p.indexOf('CTLS-FUEL') >= 0) sel.value = 'fuel';
-  else if (p.indexOf('CTLS-TOL')  >= 0) sel.value = 'tol';
+  if (p.indexOf('CTLSi-WB')   >= 0) sel.value = 'wb';
+  else if (p.indexOf('CTLSi-FUEL') >= 0) sel.value = 'fuel';
+  else if (p.indexOf('CTLSi-TOL')  >= 0) sel.value = 'tol';
+  else if (p.indexOf('CTLSi-CHECK') >= 0) sel.value = 'check';
 
   sel.addEventListener('change', function(e){
     var url = TARGETS[e.target.value];
     if (url) {
-      if (window.CTLSToolDraftStore) window.CTLSToolDraftStore.save();
+      if (window.CTLSiToolDraftStore) window.CTLSiToolDraftStore.save();
       location.href = url;
     }
   });

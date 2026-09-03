@@ -1,0 +1,11 @@
+_test.js
+node_modules/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+.env
+.env.local
+deploy/

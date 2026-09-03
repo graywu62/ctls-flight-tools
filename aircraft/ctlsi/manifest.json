@@ -1,0 +1,17 @@
+{
+  "id": "/ctlsi-flight-tools/",
+  "name": "CTLSi 飞行工具箱",
+  "short_name": "CTLSi Tools",
+  "description": "CTLSi 载重平衡、燃油计划、起飞着陆性能及电子检查单工具（POH AG 0430 0003 Rev.20）",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#071b2c",
+  "background_color": "#071b2c",
+  "icons": [
+    { "src": "CTLSi-WB/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "CTLSi-WB/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "CTLSi-WB/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
