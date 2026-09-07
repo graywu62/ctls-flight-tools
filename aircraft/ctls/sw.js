@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ctls-flight-tools-v3.0.4';
+const CACHE_NAME = 'ctls-flight-tools-v3.0.5';
 const CORE_ASSETS = [
   './', './index.html', './manifest.json', './assets/WSP_5686-web.webp',
   './CTLS-common/css/header.css', './CTLS-common/js/flight-plan-store.js',

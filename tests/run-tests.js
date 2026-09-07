@@ -79,8 +79,18 @@ function testStorageIsolation() {
 
 function testCopiesPreserved() {
   const allowed = {
-    ctls: new Set(['index.html', 'CTLS-common/js/shell-switch.js']),
-    ctlsi: new Set(['index.html', 'CTLSi-common/js/shell-switch.js'])
+    ctls: new Set([
+      'index.html',
+      'CTLS-common/js/shell-switch.js',
+      'CTLS-FUEL/js/script.js',
+      'sw.js'
+    ]),
+    ctlsi: new Set([
+      'index.html',
+      'CTLSi-common/js/shell-switch.js',
+      'CTLSi-FUEL/js/script.js',
+      'sw.js'
+    ])
   };
   for (const model of ['ctls', 'ctlsi']) {
     const sourceFiles = walk(SOURCES[model]);
@@ -93,11 +103,28 @@ function testCopiesPreserved() {
   }
 }
 
+function testFuelStatusIcons() {
+  const models = [
+    ['CTLS', path.join(COPIES.ctls, 'CTLS-FUEL', 'js', 'script.js')],
+    ['CTLSi', path.join(COPIES.ctlsi, 'CTLSi-FUEL', 'js', 'script.js')]
+  ];
+
+  for (const [label, file] of models) {
+    const script = text(file);
+    ok(script.includes("danger: 'M7 7 L17 17 M17 7 L7 17'"), `${label} danger cross icon missing`);
+    ok(script.includes("caution: 'M12 5 V14 M12 18 V18.2'"), `${label} caution icon missing`);
+    ok((script.match(/setStatusIcon\(bar, 'danger'\)/g) || []).length === 2, `${label} danger states must use the cross icon`);
+    ok(script.includes("setStatusIcon(bar, 'caution')"), `${label} caution state must use the warning icon`);
+    ok(script.includes("setStatusIcon(bar, 'ok')"), `${label} normal state must use the check icon`);
+  }
+}
+
 const tests = [
   ['root aircraft navigation', testRootNavigation],
   ['aircraft switching', testSwitching],
   ['storage isolation', testStorageIsolation],
-  ['source copies preserved', testCopiesPreserved]
+  ['source copies preserved', testCopiesPreserved],
+  ['fuel status icons', testFuelStatusIcons]
 ];
 
 for (const [name, fn] of tests) {

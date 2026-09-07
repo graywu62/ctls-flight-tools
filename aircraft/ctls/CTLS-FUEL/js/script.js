@@ -245,12 +245,27 @@ function renderResults(input, c) {
   }
 }
 
+function setStatusIcon(bar, state) {
+  const path = bar.querySelector('.status-icon-circle path');
+  if (!path) return;
+
+  const iconPaths = {
+    ok: 'M5 12 L10 17 L19 7',
+    caution: 'M12 5 V14 M12 18 V18.2',
+    danger: 'M7 7 L17 17 M17 7 L7 17'
+  };
+
+  path.setAttribute('d', iconPaths[state] || iconPaths.ok);
+  path.setAttribute('stroke-width', state === 'caution' ? '3' : '3.5');
+}
+
 function renderStatus(c, input) {
   const bar = document.getElementById('fuel_status');
   if (!bar) return;
 
   if (input.fuelOnBoardL < 0 || input.fuelOnBoardL > window.POH_DATA.TANK_CAPACITY_L) {
     bar.className = 'status-bar status-danger';
+    setStatusIcon(bar, 'danger');
     bar.querySelector('.status-title').textContent = '机上燃油超出范围';
     bar.querySelector('.status-title-en').textContent = 'INVALID FUEL LOAD';
     bar.querySelector('.status-desc').textContent = '机上燃油必须位于 0–126 L。';
@@ -262,6 +277,7 @@ function renderStatus(c, input) {
   const altitudeOutside = input.altitudeFt < alts[0] || input.altitudeFt > alts[alts.length - 1];
   if (!ok) {
     bar.className = 'status-bar status-danger';
+    setStatusIcon(bar, 'danger');
     bar.querySelector('.status-title').textContent    = '燃油不足';
     bar.querySelector('.status-title-en').textContent = 'NOT ENOUGH FUEL';
     const shortBy = Math.abs(c.landingFuelL).toFixed(1);
@@ -270,12 +286,14 @@ function renderStatus(c, input) {
   } else if (altitudeOutside) {
     const appliedAltitude = clampAltitude(input.altitudeFt);
     bar.className = 'status-bar status-caution';
+    setStatusIcon(bar, 'caution');
     bar.querySelector('.status-title').textContent = '已采用边界高度';
     bar.querySelector('.status-title-en').textContent = 'BOUNDARY ALTITUDE APPLIED';
     bar.querySelector('.status-desc').textContent = '燃油充足；性能数据已按 ' + appliedAltitude + ' ft 计算。';
     bar.querySelector('.status-desc-en').textContent = 'Fuel sufficient; performance calculated at ' + appliedAltitude + ' ft.';
   } else {
     bar.className = 'status-bar status-ok';
+    setStatusIcon(bar, 'ok');
     bar.querySelector('.status-title').textContent    = '燃油充足';
     bar.querySelector('.status-title-en').textContent = 'FUEL OK';
     bar.querySelector('.status-desc').textContent    = '机上燃油满足本次飞行需求。';
