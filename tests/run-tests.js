@@ -83,13 +83,17 @@ function testCopiesPreserved() {
       'index.html',
       'CTLS-common/js/shell-switch.js',
       'CTLS-FUEL/js/script.js',
-      'sw.js'
+      'sw.js',
+      'assets/WSP_5686.jpg',
+      'assets/WSP_5686-web.webp'
     ]),
     ctlsi: new Set([
       'index.html',
       'CTLSi-common/js/shell-switch.js',
       'CTLSi-FUEL/js/script.js',
-      'sw.js'
+      'sw.js',
+      'assets/WSP_5686.jpg',
+      'assets/WSP_5686-web.webp'
     ])
   };
   for (const model of ['ctls', 'ctlsi']) {

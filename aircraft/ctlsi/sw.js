@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ctlsi-flight-tools-v2.0.2';
+const CACHE_NAME = 'ctlsi-flight-tools-v2.0.3';
 const CORE_ASSETS = [
   './', './index.html', './manifest.json', './assets/WSP_5686-web.webp',
   './CTLSi-common/css/header.css', './CTLSi-common/js/flight-plan-store.js',
