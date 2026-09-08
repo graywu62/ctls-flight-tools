@@ -1,0 +1,23 @@
+{
+  "id": "./",
+  "name": "CT Flight Tools",
+  "short_name": "CTLS Tools",
+  "description": "CTLS 与 CTLSi 飞行准备工具",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#102d40",
+  "background_color": "#102d40",
+  "icons": [
+    { "src": "aircraft/ctls/CTLS-WB/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "aircraft/ctls/CTLS-WB/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    {
+      "src": "aircraft/ctls/CTLS-WB/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -4,7 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#102d40">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CTLS Tools">
   <title>CT FLIGHT TOOLS · 选择机型</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="aircraft/ctls/CTLS-WB/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="aircraft/ctls/CTLS-WB/icons/icon-192.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-model="ctls">
@@ -50,5 +56,6 @@
     <footer><span>Flight operations suite</span><span>Select aircraft to continue</span></footer>
   </div>
   <script src="aircraft-selector.js"></script>
+  <script src="pwa-register.js"></script>
 </body>
 </html>

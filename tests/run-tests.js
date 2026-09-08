@@ -53,6 +53,24 @@ function testRootNavigation() {
   ok(fs.existsSync(path.join(ROOT, 'assets', 'aircraft-ctlsi-line.png')), 'CTLSi line-art asset missing');
 }
 
+function testRootPwa() {
+  const html = text(path.join(ROOT, 'index.html'));
+  const manifest = JSON.parse(text(path.join(ROOT, 'manifest.json')));
+  const worker = text(path.join(ROOT, 'sw.js'));
+  ok(html.includes('rel="manifest" href="manifest.json"'), 'root manifest link missing');
+  ok(html.includes('rel="apple-touch-icon"'), 'root Apple touch icon missing');
+  ok(html.includes('src="pwa-register.js"'), 'root PWA registration missing');
+  ok(manifest.id === './', 'root PWA id must follow its deployed repository path');
+  ok(manifest.start_url === './index.html' && manifest.scope === './', 'root PWA start URL or scope incorrect');
+  ok(manifest.icons.length === 3, 'root PWA icon set incomplete');
+  for (const icon of manifest.icons) {
+    ok(fs.existsSync(path.join(ROOT, icon.src)), `root PWA icon missing: ${icon.src}`);
+    ok(worker.includes(`'./${icon.src}'`), `root PWA icon not cached: ${icon.src}`);
+  }
+  ok(worker.includes("'./assets/aircraft-ctls-line.png'"), 'CTLS selector art not cached');
+  ok(worker.includes("'./assets/aircraft-ctlsi-line.png'"), 'CTLSi selector art not cached');
+}
+
 function testSwitching() {
   const ctlsHome = text(path.join(COPIES.ctls, 'index.html'));
   const ctlsiHome = text(path.join(COPIES.ctlsi, 'index.html'));
@@ -125,6 +143,7 @@ function testFuelStatusIcons() {
 
 const tests = [
   ['root aircraft navigation', testRootNavigation],
+  ['root PWA install configuration', testRootPwa],
   ['aircraft switching', testSwitching],
   ['storage isolation', testStorageIsolation],
   ['source copies preserved', testCopiesPreserved],
